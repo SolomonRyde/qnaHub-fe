@@ -6,6 +6,7 @@ export function FormInput({
   label,
   id,
   type = "text",
+  placeHolder = "",
   icon: Icon,
   rightIcon: RightIcon = "",
   onRightIconClick = {},
@@ -27,6 +28,7 @@ export function FormInput({
         <Input
           id={id}
           type={type}
+          placeholder={placeHolder}
           className={cn(
             Icon && "pl-10",
             RightIcon && "pr-10",
