@@ -219,6 +219,7 @@ export function SignupPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormInput
             label="Full name"
+            placeHolder="Enter your name"
             value={name}
             onChange={(e) => handleChange("name", e.target.value)}
             onBlur={(e) => handleBlur("name", e.target.value)}
@@ -228,6 +229,7 @@ export function SignupPage() {
           <FormInput
             label="Email"
             icon={Mail}
+            placeHolder="Enter you email"
             value={email}
             onChange={(e) => handleChange("email", e.target.value)}
             onBlur={(e) => handleBlur("email", e.target.value)}
@@ -252,6 +254,7 @@ export function SignupPage() {
 
           <FormInput
             label="Password"
+            placeHolder="Enter the password "
             type={showPassword ? "text" : "password"}
             icon={Lock}
             rightIcon={showPassword ? EyeOff : Eye}
@@ -264,6 +267,7 @@ export function SignupPage() {
 
           <FormInput
             label="Confirm Password"
+            placeHolder="Enter confirm password"
             type={showConfirmPassword ? "text" : "password"}
             icon={Lock}
             rightIcon={showConfirmPassword ? EyeOff : Eye}

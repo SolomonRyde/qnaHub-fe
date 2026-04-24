@@ -106,6 +106,7 @@ export function LoginPage() {
           <FormInput
             label="Email"
             type="email"
+            placeHolder="Enter your email"
             icon={Mail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -123,6 +124,7 @@ export function LoginPage() {
           <FormInput
             label="Password"
             type={showPassword ? "text" : "password"}
+            placeHolder="Enter the password"
             icon={Lock}
             rightIcon={showPassword ? EyeOff : Eye}
             onRightIconClick={() => setShowPassword(!showPassword)}
