@@ -100,16 +100,6 @@ export const login = async ({ email, password }) => {
   return data; // { token, user }
 };
 
-// utils/auth.js
-export const isLoggedIn = () => {
-  return !!localStorage.getItem("token");
-};
-
-export const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-};
-
 export async function forgotPassword(email) {
   const res = await fetch(
     "https://api.rydevalues.cloud/api/v1/auth/forgot-password",
