@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserById } from "../../../services/apiUsers";
+import { getUserById } from "../../../../services/apiUsers";
 import { toast } from "react-hot-toast";
 
 export const useUserById = (userId, options = {}) => {

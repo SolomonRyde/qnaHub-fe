@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { softDeleteUser, bulkSoftDelete } from "../../../services/apiUsers";
+import { softDeleteUser, bulkSoftDelete } from "../../../../services/apiUsers";
 import toast from "react-hot-toast";
 
 export const useDeleteUser = () => {

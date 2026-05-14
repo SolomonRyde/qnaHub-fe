@@ -23,7 +23,7 @@ export const useLogin = () => {
         const role = data.user?.role?.toLowerCase();
 
         if (role === "admin") {
-          navigate("/user-management");
+          navigate("/dashboard-admin/user-management");
         } else {
           navigate("/dashboard");
         }
