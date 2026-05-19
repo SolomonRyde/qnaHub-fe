@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 import { cn } from "../../../lib/utils";
 
 export default function DashboardLayout() {

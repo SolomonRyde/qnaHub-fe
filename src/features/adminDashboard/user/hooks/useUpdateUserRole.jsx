@@ -1,6 +1,6 @@
 // hooks/useUpdateUserRole.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateUserRole } from "../../../services/apiUsers";
+import { updateUserRole } from "../../../../services/apiUsers";
 import { toast } from "react-hot-toast";
 
 export const useUpdateUserRole = () => {

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Users, Shield, Key, Settings } from "lucide-react";
@@ -32,9 +31,18 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        <SidebarItem icon={Users} label="Users" to="/user-management" end />
-        <SidebarItem icon={Shield} label="Roles" to="roles" />
-        <SidebarItem icon={Key} label="Permissions" to="permissions" />
+        <SidebarItem
+          icon={Users}
+          label="Users Management"
+          to="/dashboard-admin/user-management"
+          end
+        />
+        <SidebarItem icon={Shield} label="Roles" to="/dashboard-admin/roles" />
+        <SidebarItem
+          icon={Key}
+          label="Hierarchy Management"
+          to="/dashboard-admin/hierarchy-management"
+        />
         <SidebarItem icon={Settings} label="Settings" to="settings" />
       </nav>
 

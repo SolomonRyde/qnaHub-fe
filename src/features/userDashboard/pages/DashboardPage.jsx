@@ -34,6 +34,8 @@ export function DashboardPage() {
   const handleViewCertificates = () => navigate("/certificates");
   const handleOpenSettings = () => navigate("/settings");
 
+  const handleAdminDashboard = () => navigate("/dashboard-admin");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
       {/* Navbar */}
@@ -42,13 +44,27 @@ export function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* ✅ Welcome */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">
-            Welcome back, {user?.name?.split(" ")[0] || "User"} 👋
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Ready to continue your learning journey 🚀
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold">
+              Welcome back, {user?.name?.split(" ")[0] || "User"} 👋
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Ready to continue your learning journey 🚀
+            </p>
+          </div>
+
+          {/* ✅ Admin Only */}
+          {user?.role === "admin" && (
+            <Button
+              variant="default"
+              onClick={handleAdminDashboard}
+              className="justify-start gap-2"
+            >
+              <BookOpen className="w-4 h-4" />
+              Admin Dashboard
+            </Button>
+          )}
         </div>
 
         {/* ✅ User Info Card */}

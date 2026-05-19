@@ -1,8 +1,8 @@
 // src/hooks/useUsers.jsimport { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../../services/apiUsers";
-import { normalizeUser } from "../../../lib/userStatus";
+import { getUsers } from "../../../../services/apiUsers";
+import { normalizeUser } from "../../../../lib/userStatus";
 import toast from "react-hot-toast";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 
 // src/hooks/useUsers.js

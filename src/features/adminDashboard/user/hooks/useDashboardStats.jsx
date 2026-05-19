@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardStats } from "../../../services/apiDashboard";
+import { getDashboardStats } from "../../../../services/apiDashboard";
 import toast from "react-hot-toast";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 
 export const useDashboardStats = () => {
   const { user } = useAuth();

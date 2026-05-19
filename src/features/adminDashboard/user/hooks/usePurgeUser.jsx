@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { purgeUser, bulkPurge } from "../../../services/apiUsers";
+import { purgeUser, bulkPurge } from "../../../../services/apiUsers";
 import toast from "react-hot-toast";
 
 export const usePurgeUser = () => {

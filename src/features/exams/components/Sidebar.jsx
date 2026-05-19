@@ -6,7 +6,7 @@ import { ChevronDown, Building2, Tag, Layers } from "lucide-react";
 // --- Sidebar Component ---
 const Sidebar = ({ className, onFilterChange, initialFilters = {} }) => {
   const { categories, isLoading } = useCategories();
-
+  console.log("CATEGORIES", categories);
   const [selectedIndustry, setSelectedIndustry] = useState(
     initialFilters.industry ?? null,
   );
@@ -56,7 +56,8 @@ const Sidebar = ({ className, onFilterChange, initialFilters = {} }) => {
   }, []);
 
   // ✅ Derived Data
-  const industries = categories?.data || [];
+  const industries = categories?.nestedData || [];
+  console.log("INDUSTRIES", industries);
 
   const selectedIndustryData = useMemo(() => {
     return industries.find((i) => i.id === selectedIndustry);

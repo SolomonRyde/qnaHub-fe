@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast"; // or your preferred toast library
-import { restoreUser, bulkRestoreUsers } from "@/services/apiUsers";
+import { restoreUser, bulkRestoreUsers } from "../../../../services/apiUsers";
 
 /**
  * React Query hook for restoring users (single or bulk)
