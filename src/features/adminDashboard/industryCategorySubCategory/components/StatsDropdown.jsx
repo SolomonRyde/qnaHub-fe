@@ -1,24 +1,5 @@
 import { Icons } from "./Icons";
 
-// Stat Card
-export function StatCard({ icon, iconBg, label, value }) {
-  return (
-    <div className="bg-card rounded-2xl border border-border p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div
-        className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}
-      >
-        {icon}
-      </div>
-      <div>
-        <p className="text-sm text-muted-foreground font-medium leading-tight">
-          {label}
-        </p>
-        <p className="text-3xl font-bold text-foreground mt-0.5">{value}</p>
-      </div>
-    </div>
-  );
-}
-
 // Select Dropdown
 export const SelectDropdown = ({
   label,

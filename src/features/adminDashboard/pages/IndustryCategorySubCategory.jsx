@@ -16,7 +16,7 @@ import {
   AddSubcategoryModal,
 } from "../industryCategorySubCategory/components/Modals";
 
-import { StatCard } from "../industryCategorySubCategory/components/StatsDropdown";
+import { StatCard } from "../../../components/ui/StatCard";
 import { SelectDropdown } from "../industryCategorySubCategory/components/StatsDropdown";
 
 import {
@@ -74,18 +74,6 @@ function IndustryCategoryContent() {
 
   const industries = data?.nestedData || [];
   console.log("INDUSTRIES", industries);
-
-  // const totalCats = industries.reduce(
-  //   (a, i) => a + (i.categories?.length || 0),
-  //   0,
-  // );
-  // const totalSubs = industries.reduce(
-  //   (a, i) =>
-  //     a +
-  //     (i.categories?.reduce((b, c) => b + (c.subcategories?.length || 0), 0) ||
-  //       0),
-  //   0,
-  // );
 
   const totalIndustries = data?.stats?.totalIndustries || 0;
   const totalCats = data?.stats?.totalCategories || 0;
@@ -153,7 +141,7 @@ function IndustryCategoryContent() {
           <h1 className="text-3xl font-bold text-foreground tracking-tight">
             Industry Hierarchy Management
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className=" text-muted-foreground mt-1">
             Manage industries, categories, and subcategories from a centralized
             dashboard.
           </p>
@@ -169,26 +157,30 @@ function IndustryCategoryContent() {
       </div>
 
       {/* Stats */}
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          icon={<Icons.Industry />}
-          iconBg="bg-primary/10 text-primary"
-          label="Total Industries"
+          title="Total Industries"
           value={isLoading ? "—" : totalIndustries}
-          // value={isLoading ? "—" : industries.length}
+          icon={Icons.Industry}
+          variant="primary"
+          trend="Registered industries"
         />
+
         <StatCard
-          icon={<Icons.Category />}
-          iconBg="bg-blue-500/10 text-blue-500 dark:text-blue-400"
-          label="Total Categories"
+          title="Total Categories"
           value={isLoading ? "—" : totalCats}
-          // value={isLoading ? "—" : totalCats}
+          icon={Icons.Category}
+          variant="info"
+          trend="Across all industries"
         />
+
         <StatCard
-          icon={<Icons.Subcategory />}
-          iconBg="bg-purple-500/10 text-purple-500 dark:text-purple-400"
-          label="Total Subcategories"
+          title="Total Subcategories"
           value={isLoading ? "—" : totalSubs}
+          icon={Icons.Subcategory}
+          variant="purple"
+          trend="Nested specialization groups"
         />
       </div>
 

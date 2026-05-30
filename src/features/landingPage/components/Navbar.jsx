@@ -58,9 +58,9 @@ export function Navbar() {
   // ✅ Prevent flicker before auth loads
   if (loading) return null;
 
-  console.log("USER:", user);
-  console.log("AUTH:", isAuthenticated);
-  console.log("PATH:", location.pathname);
+  // console.log("USER:", user);
+  // console.log("AUTH:", isAuthenticated);
+  // console.log("PATH:", location.pathname);
 
   return (
     <header
@@ -131,7 +131,7 @@ export function Navbar() {
                   {user?.name?.split(" ")[0] || "Dashboard"}
                 </Button>
 
-                <Button size="sm" onClick={handleLogout}>
+                <Button className=" mb-2 px-4" size="sm" onClick={handleLogout}>
                   Logout
                 </Button>
               </div>

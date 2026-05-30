@@ -23,15 +23,17 @@ import { AuthProvider } from "./context/AuthContext";
 // Dashboard Layout & Pages
 import DashboardLayout from "./features/adminDashboard/layout/DashbaordLayout";
 import UserManagementPage from "./features/adminDashboard/pages/UserManagementPage";
-import RolesPage from "./features/adminDashboard/pages/RolesPage";
+import AdminExamsPage from "./features/adminDashboard/pages/ExamManagement";
 import IndustryCategorySubCategory from "./features/adminDashboard/pages/IndustryCategorySubCategory";
 import SettingsPage from "./features/adminDashboard/pages/SettingsPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+import { AnalyticsPage } from "./features/adminDashboard/exams/components/UI/AnalyticsPage";
+
 function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { staleTime: 0 },
+      queries: { staleTime: 0, retry: 1, refetchOnWindowFocus: false },
     },
   });
 
@@ -66,7 +68,7 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/exams" element={<ExamsPage />} />
-                <Route path="/exam/:id" element={<ExamOverviewPage />} />
+                <Route path="/exam/:slug" element={<ExamOverviewPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -108,7 +110,11 @@ function App() {
                     path="user-management"
                     element={<UserManagementPage />}
                   />
-                  <Route path="roles" element={<RolesPage />} />
+                  <Route path="exam-management" element={<AdminExamsPage />} />
+
+                  {/* ✅ Analytics route - standalone sibling (FIXED) */}
+                  <Route path="analytics" element={<AnalyticsPage />} />
+
                   <Route
                     path="hierarchy-management"
                     element={<IndustryCategorySubCategory />}

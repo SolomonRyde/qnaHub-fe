@@ -1,5 +1,5 @@
 import { Navbar } from "../../landingPage/components/Navbar";
-import ExamsLayout from "../../exams/components/ExamsPage";
+import ExamsLayout from "../components/grid/ExamsPage";
 
 export default function ExamsPage() {
   return (
