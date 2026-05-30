@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getIndustriesAndCategoriesAndSubCategories } from "../../../services/apiCategories";
+import { api } from "../../../services/apiIndustryCategorySubCategory";
 
 export const useCategories = () => {
   const {
@@ -8,7 +8,7 @@ export const useCategories = () => {
     error,
   } = useQuery({
     queryKey: ["categories"],
-    queryFn: getIndustriesAndCategoriesAndSubCategories,
+    queryFn: api.getIndustriesAndCategoriesAndSubCategories,
   });
 
   return { categories, isLoading, error };

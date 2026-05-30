@@ -25,7 +25,6 @@ import {
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Card } from "../../../components/ui/Card";
-import { Badge } from "../../../components/ui/Badge";
 import { cn } from "../../../lib/utils";
 import { useDashboardStats } from "../user/hooks/useDashboardStats";
 import { useUsers } from "../user/hooks/useUsers";
@@ -46,7 +45,7 @@ import {
 } from "../../../lib/userStatus";
 import { PaginationControls } from "../user/components/PaginationControls";
 import { RoleBadge } from "../user/components/RoleBadge";
-import { StatsCard } from "../user/components/StatsCard";
+import { StatCard } from "../../../components/ui/StatCard";
 import { StatusBadge } from "../user/components/StatusBadge";
 
 import { useAuth } from "../../../context/AuthContext";
@@ -356,29 +355,52 @@ export default function UserManagementPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
+        <StatCard
           title="Total Users"
           value={statsLoading ? "..." : stats.total_users?.toLocaleString()}
           icon={Users}
           iconColor="primary"
+          badge={{
+            text: "All Accounts",
+            variant: "success",
+          }}
+          trend="+12% this month"
         />
-        <StatsCard
-          title="Active"
+
+        <StatCard
+          title="Active Users"
           value={statsLoading ? "..." : stats.active_users?.toLocaleString()}
           icon={CheckCircle}
           iconColor="success"
+          badge={{
+            text: "Healthy",
+            variant: "success",
+          }}
+          trend="Currently active"
         />
-        <StatsCard
-          title="Inactive"
+
+        <StatCard
+          title="Inactive Users"
           value={statsLoading ? "..." : stats.inactive_users?.toLocaleString()}
           icon={Ban}
           iconColor="danger"
+          badge={{
+            text: "Needs Attention",
+            variant: "warning",
+          }}
+          trend="No recent activity"
         />
-        <StatsCard
-          title="New Signups last 7 days"
+
+        <StatCard
+          title="New Signups"
           value={statsLoading ? "..." : stats.new_signups_7d?.toLocaleString()}
           icon={UserPlus}
           iconColor="success"
+          badge={{
+            text: "Growing",
+            variant: "success",
+          }}
+          trend="Last 7 days"
         />
       </div>
 
@@ -464,7 +486,8 @@ export default function UserManagementPage() {
                         </div>
                       </td>
                       <td className="py-4 px-6">
-                        <RoleBadge role={user.role} />
+                        <StatusBadge role={user.role} />
+                        {/* <RoleBadge role={user.role} /> */}
                       </td>
                       <td className="py-4 px-6">
                         <StatusBadge user={user} />
