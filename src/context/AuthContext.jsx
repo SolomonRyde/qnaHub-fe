@@ -71,6 +71,7 @@ export function AuthProvider({ children }) {
           await logout(true);
         }
       } catch (err) {
+        console.error("Auth polling failed:", err);
         await logout();
       }
     }, 10000); // 🔁 every 10 seconds

@@ -21,11 +21,12 @@ import { ProtectedRoute } from "./features/authentication/components/ProtectedRo
 import { AuthProvider } from "./context/AuthContext";
 
 // Dashboard Layout & Pages
-import DashboardLayout from "./features/adminDashboard/pages/DashbaordLayout";
+import DashboardLayout from "./features/adminDashboard/layout/DashbaordLayout";
 import UserManagementPage from "./features/adminDashboard/pages/UserManagementPage";
 import RolesPage from "./features/adminDashboard/pages/RolesPage";
-import PermissionsPage from "./features/adminDashboard/pages/PermissionsPage";
+import IndustryCategorySubCategory from "./features/adminDashboard/pages/IndustryCategorySubCategory";
 import SettingsPage from "./features/adminDashboard/pages/SettingsPage";
+import ManageQuestionsPage from "./features/questions/pages/ManageQuestionsPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           <Toaster
-            position="top=center"
+            position="top-center"
             gutter={12}
             containerStyle={{ margin: "8px" }}
             toastOptions={{
@@ -93,16 +94,27 @@ function App() {
                 {/* Admin Only */}
 
                 <Route
-                  path="/user-management"
+                  path="/dashboard-admin"
                   element={
                     <ProtectedRoute allowedRoles={["admin"]}>
                       <DashboardLayout />
                     </ProtectedRoute>
                   }
                 >
-                  <Route index element={<UserManagementPage />} />
+                  <Route
+                    index
+                    element={<Navigate to="user-management" replace />}
+                  />
+                  <Route
+                    path="user-management"
+                    element={<UserManagementPage />}
+                  />
                   <Route path="roles" element={<RolesPage />} />
-                  <Route path="permissions" element={<PermissionsPage />} />
+                  <Route
+                    path="hierarchy-management"
+                    element={<IndustryCategorySubCategory />}
+                  />
+                  <Route path="manage-questions" element={<ManageQuestionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                 </Route>
 
