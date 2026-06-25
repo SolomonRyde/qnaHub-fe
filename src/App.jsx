@@ -25,7 +25,7 @@ import DashboardLayout from "./features/adminDashboard/layout/DashbaordLayout";
 import UserManagementPage from "./features/adminDashboard/pages/UserManagementPage";
 import AdminExamsPage from "./features/adminDashboard/pages/ExamManagement";
 import IndustryCategorySubCategory from "./features/adminDashboard/pages/IndustryCategorySubCategory";
-import SettingsPage from "./features/adminDashboard/pages/SettingsPage";
+import AIQuestionGeneratorPage from "./features/adminDashboard/pages/LLMQuestionGenerator";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { AnalyticsPage } from "./features/adminDashboard/exams/components/UI/AnalyticsPage";
@@ -119,7 +119,10 @@ function App() {
                     path="hierarchy-management"
                     element={<IndustryCategorySubCategory />}
                   />
-                  <Route path="settings" element={<SettingsPage />} />
+                  <Route
+                    path="llm-question-generator"
+                    element={<AIQuestionGeneratorPage />}
+                  />
                 </Route>
 
                 {/* Catch-all */}
