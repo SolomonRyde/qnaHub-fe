@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Users, Shield, Key, Settings, BookOpen } from "lucide-react";
+import { Users, Shield, Key, Settings, BookOpen, Bot } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 const SidebarItem = ({ icon: Icon, label, to, end = false }) => (
@@ -47,7 +47,11 @@ export default function Sidebar() {
           label="Hierarchy Management"
           to="/dashboard-admin/hierarchy-management"
         />
-        <SidebarItem icon={Settings} label="Settings" to="settings" />
+        <SidebarItem
+          icon={Bot}
+          label="LLM Question Generator"
+          to="/dashboard-admin/llm-question-generator"
+        />
       </nav>
 
       {/* Footer */}
