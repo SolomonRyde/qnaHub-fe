@@ -125,6 +125,73 @@ const AIQuestionGeneratorPage = () => {
     }
   };
 
+  // const handleGenerate = () => {
+  //   const validation = validateGenerationParams(formData);
+  //   if (!validation.valid) {
+  //     toast.error(validation.error);
+  //     return;
+  //   }
+
+  //   setQuestions([]);
+  //   setIsPreviewOpen(false);
+  //   setGenerationTime(null);
+  //   setCurrentUsage(null);
+  //   setExamMetadata(null); // ✅ Reset exam metadata
+  //   const startTime = Date.now();
+
+  //   generateQuestions(formData, {
+  //     onSuccess: (data) => {
+  //       const elapsed = (Date.now() - startTime) / 1000;
+  //       setGenerationTime(parseFloat(elapsed.toFixed(1)));
+  //       if (data?.questions?.length) {
+  //         setQuestions(data.questions);
+  //         // const selectedExam = exams.find(
+  //         //   (exam) => +exam.id === +formData.exam_id,
+  //         // );
+  //         // setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
+  //         // setCurrentUsage(data.usage);
+  //         // setAiStats(data.stats);
+
+  //         const selectedExam = exams.find(
+  //           (exam) => +exam.id === +formData.exam_id,
+  //         );
+
+  //         setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
+  //         setCurrentUsage(data.usage);
+  //         setAiStats(data.stats);
+
+  //         // ✅ Construct robust metadata in ONE step
+  //         // We pull industry/category directly from the selectedExam object
+  //         // (based on your examModel.js SQL JOINs)
+  //         setExamMetadata({
+  //           // 1. CSV Content Columns
+  //           industry: selectedExam?.industry_name || "",
+  //           category: selectedExam?.category_name || "",
+  //           subcategory: selectedExam?.sub_category_name || "",
+
+  //           // 2. Guaranteed Filename Fields
+  //           exam_title: selectedExam?.exam_title || "EXAM",
+  //           difficulty:
+  //             formData.difficulty || selectedExam?.difficulty || "UNKNOWN",
+  //           no_of_questions:
+  //             formData.num_questions ||
+  //             formData.no_of_questions ||
+  //             selectedExam?.no_of_questions ||
+  //             data.questions.length,
+  //         });
+
+  //         // ✅ Store exam metadata from response
+  //         if (data.exam_metadata) {
+  //           setExamMetadata(data.exam_metadata);
+  //         }
+
+  //         toast.success("Questions generated successfully!");
+  //       }
+  //     },
+  //     onError: () => setGenerationTime(null),
+  //   });
+  // };
+
   const handleGenerate = () => {
     const validation = validateGenerationParams(formData);
     if (!validation.valid) {
@@ -145,17 +212,34 @@ const AIQuestionGeneratorPage = () => {
         setGenerationTime(parseFloat(elapsed.toFixed(1)));
         if (data?.questions?.length) {
           setQuestions(data.questions);
+
           const selectedExam = exams.find(
             (exam) => +exam.id === +formData.exam_id,
           );
+
           setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
           setCurrentUsage(data.usage);
           setAiStats(data.stats);
 
-          // ✅ Store exam metadata from response
-          if (data.exam_metadata) {
-            setExamMetadata(data.exam_metadata);
-          }
+          // ✅ Construct robust metadata in ONE step
+          setExamMetadata({
+            // 1. CSV Content Columns
+            industry: selectedExam?.industry_name || "",
+            category: selectedExam?.category_name || "",
+            subcategory: selectedExam?.sub_category_name || "",
+
+            // 2. Guaranteed Filename Fields
+            exam_title: selectedExam?.exam_title || "EXAM",
+            difficulty:
+              formData.difficulty || selectedExam?.difficulty || "UNKNOWN",
+            no_of_questions:
+              formData.num_questions ||
+              formData.no_of_questions ||
+              selectedExam?.no_of_questions ||
+              data.questions.length,
+          });
+
+          // ❌ DELETED: The if (data.exam_metadata) block is gone so it doesn't overwrite the above!
 
           toast.success("Questions generated successfully!");
         }

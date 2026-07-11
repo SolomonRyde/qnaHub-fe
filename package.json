@@ -18,6 +18,7 @@
     "@tanstack/react-query-devtools": "^5.96.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.42.0",
     "libphonenumber-js": "^1.12.41",
     "lucide-react": "^0.460.0",
     "papaparse": "^5.5.3",
@@ -27,6 +28,7 @@
     "react-hot-toast": "^2.6.0",
     "react-phone-input-2": "^2.15.1",
     "react-router-dom": "^7.13.1",
+    "recharts": "^3.9.1",
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7"
   },

@@ -43,7 +43,7 @@ import {
   canRestore,
   canSelectForBulkRestore,
 } from "../../../lib/userStatus";
-import { PaginationControls } from "../user/components/PaginationControls";
+import { PaginationControls } from "../../../components/ui/PaginationControls";
 import { RoleBadge } from "../user/components/RoleBadge";
 import { StatCard } from "../../../components/ui/StatCard";
 import { StatusBadge } from "../user/components/StatusBadge";
