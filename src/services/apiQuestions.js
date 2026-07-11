@@ -100,7 +100,7 @@ async function request(url, options = {}) {
     if (response.status === 429) {
       throw new Error(
         data.message ||
-          "Too many requests. Please wait for 2-5 minutes and try again."
+          "Too many requests. Please wait for 2-5 minutes and try again.",
       );
     }
 
@@ -115,7 +115,7 @@ async function request(url, options = {}) {
     throw new Error(
       data.message ||
         data.error ||
-        `Request failed with status ${response.status}`
+        `Request failed with status ${response.status}`,
     );
   }
 
@@ -132,8 +132,8 @@ export function getQuestions(params = {}) {
         value !== undefined &&
         value !== null &&
         value !== "" &&
-        value !== "all"
-    )
+        value !== "all",
+    ),
   );
 
   const query = new URLSearchParams(filteredParams).toString();
@@ -177,6 +177,7 @@ function getLoggedInUserForAudit() {
 
 export function uploadCsvToStaging(file, uploadedBy) {
   const userName = uploadedBy || getLoggedInUserForAudit();
+  console.log("LoggedInUserAudit", userName);
 
   const formData = new FormData();
   formData.append("file", file);
@@ -190,6 +191,7 @@ export function uploadCsvToStaging(file, uploadedBy) {
       "x-user-id": String(userName),
       "x-uploaded-by": String(userName),
       "x-created-by": String(userName),
+      "x-username": String(userName), // ✅ ADD THIS LINE
     },
     body: formData,
   });
@@ -202,8 +204,8 @@ export function getStagingQuestions(params = {}) {
         value !== undefined &&
         value !== null &&
         value !== "" &&
-        value !== "all"
-    )
+        value !== "all",
+    ),
   );
 
   const query = new URLSearchParams(filteredParams).toString();
@@ -221,9 +223,7 @@ export function validateStagingQuestionsApi() {
 }
 
 export function getPushPreview(importId) {
-  const query = importId
-    ? `?import_id=${encodeURIComponent(importId)}`
-    : "";
+  const query = importId ? `?import_id=${encodeURIComponent(importId)}` : "";
 
   return request(`/staging-questions/push-preview${query}`);
 }
@@ -248,6 +248,13 @@ export function deleteQuestion(id) {
   });
 }
 
+export async function deleteBulkQuestions(ids) {
+  return request("/questions/bulk", {
+    method: "DELETE",
+    body: JSON.stringify({ ids }),
+  });
+}
+
 export function getImportHistory(params = {}) {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(
@@ -255,15 +262,14 @@ export function getImportHistory(params = {}) {
         value !== undefined &&
         value !== null &&
         value !== "" &&
-        value !== "all"
-    )
+        value !== "all",
+    ),
   );
 
   const query = new URLSearchParams(filteredParams).toString();
 
   return request(`/question-imports${query ? `?${query}` : ""}`);
 }
-
 
 export function getSingleImportHistory(importId) {
   if (!importId) {
@@ -295,8 +301,8 @@ export function getExams(params = {}) {
         value !== undefined &&
         value !== null &&
         value !== "" &&
-        value !== "all"
-    )
+        value !== "all",
+    ),
   );
 
   const query = new URLSearchParams(filteredParams).toString();
@@ -305,27 +311,50 @@ export function getExams(params = {}) {
 }
 
 export function getIndustries() {
-   return request("/exam/industries");
+  return request("/exam/industries");
 }
-
-// export function getHierarchy() {
-//   return request("/all-industries-categories-subcategories");
-// }
-
 
 export function getHierarchy(params = {}) {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(
-      ([, value]) =>
-        value !== undefined &&
-        value !== null &&
-        value !== ""
-    )
+      ([, value]) => value !== undefined && value !== null && value !== "",
+    ),
   );
 
   const query = new URLSearchParams(filteredParams).toString();
 
   return request(
-    `/all-industries-categories-subcategories${query ? `?${query}` : ""}`
+    `/all-industries-categories-subcategories${query ? `?${query}` : ""}`,
   );
+}
+
+export async function deleteSingleStagingQuestion(stageId) {
+  return request(`/staging-questions/${encodeURIComponent(stageId)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function deleteDuplicateQuestions() {
+  return request("/staging-questions/duplicates", {
+    method: "DELETE",
+  });
+}
+
+export async function deleteAllStagingQuestions() {
+  return request("/staging-questions/all", {
+    method: "DELETE",
+  });
+}
+
+export async function deleteStagingQuestionsByStatus(status) {
+  return request(`/staging-questions/by-status/${encodeURIComponent(status)}`, {
+    method: "DELETE",
+  });
+}
+
+// ✅ NEW: Delete import history item
+export async function deleteImportHistoryItem(importId) {
+  return request(`/question-imports/${encodeURIComponent(importId)}`, {
+    method: "DELETE",
+  });
 }
