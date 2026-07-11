@@ -103,6 +103,73 @@ export async function getSubcategories(categoryId) {
 }
 
 /* ========================================
+   EXAM ATTEMPT APIS (Authenticated Users)
+   ======================================== */
+
+export async function startExam(examId) {
+  const res = await fetch(`${API_BASE}/${examId}/start`, {
+    method: "POST",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+export async function getExamQuestions(examId) {
+  const res = await fetch(`${API_BASE}/${examId}/questions`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+export async function submitExam(attemptId, answers) {
+  const res = await fetch(`${API_BASE}/submit`, {
+    method: "POST",
+    credentials: "include",
+    headers: getHeaders(),
+    body: JSON.stringify({ attemptId, answers }),
+  });
+  return handleResponse(res);
+}
+
+export async function getExamResult(attemptId) {
+  const res = await fetch(`${API_BASE}/result/${attemptId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+/* ========================================
+   USER / ACCOUNT APIS (Authenticated Users)
+   ======================================== */
+
+// Returns the logged-in user's own exam attempt history.
+// Backend must scope this to req.user.id from the auth cookie/session —
+// never accept a userId param from the client for this endpoint.
+//
+// Confirmed response shape (GET /exam/my-attempts):
+//   { success, data: [{ id, exam_id, exam_title, slug, score, total_marks,
+//                        percentage, passed, status, start_time, end_time }],
+//     meta: { total, page, limit, totalPages } }
+export async function getMyExamAttempts(params = {}) {
+  const queryString = buildQueryString({
+    page: params.page || 1,
+    limit: params.limit || 5,
+    ...params,
+  });
+  const res = await fetch(`${API_BASE}/my-attempts${queryString}`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+/* ========================================
    ADMIN APIS
    ======================================== */
 

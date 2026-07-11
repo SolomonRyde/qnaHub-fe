@@ -4,7 +4,7 @@ export const downloadQuestionsCsv = (
   questions,
   exam_id = null,
   filename = null,
-  examMetadata = null, // ✅ New parameter for exam metadata
+  examMetadata = null,
 ) => {
   if (!Array.isArray(questions) || questions.length === 0) {
     console.warn("No questions to export");
@@ -14,16 +14,18 @@ export const downloadQuestionsCsv = (
   // Use exam_id from props if provided, otherwise fallback to first question's exam_id if available
   const targetExamId = exam_id || questions[0]?.exam_id;
 
-  // ✅ Extract metadata fields
+  // ✅ Extract metadata fields for CSV content
   const industry = examMetadata?.industry || "";
   const category = examMetadata?.category || "";
   const subcategory = examMetadata?.subcategory || "";
+  const difficulty = examMetadata?.difficulty || "UNKNOWN";
 
   const csvData = questions.map((q) => ({
     exam_id: targetExamId || "",
     industry: industry,
     category: category,
     subcategory: subcategory,
+    difficulty: difficulty,
     question: q.question || "",
     option_a: q.option_a || "",
     option_b: q.option_b || "",
@@ -46,9 +48,27 @@ export const downloadQuestionsCsv = (
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
 
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  // ✅ GENERATE DYNAMIC FILENAME: EXAM_TITLE_DIFFICULTY_NO_OF_QUESTIONS.csv
+  const examTitle = examMetadata?.exam_title || "EXAM";
+  const noOfQuestions = examMetadata?.no_of_questions || questions.length;
+
+  // Clean and format the title:
+  // 1. Convert to UPPERCASE
+  // 2. Replace any non-alphanumeric characters (spaces, hyphens, etc.) with a single underscore
+  // 3. Remove any leading or trailing underscores
+  const formattedTitle = examTitle
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+
+  const formattedDifficulty = difficulty.toUpperCase();
+
+  // Construct the final filename (e.g., JUDICIARY_BASICS_HARD_10.csv)
+  const dynamicFilename = `${formattedTitle}_${formattedDifficulty}_${noOfQuestions}.csv`;
+
   link.setAttribute("href", url);
-  link.setAttribute("download", filename || `questions-${timestamp}.csv`);
+  // Use the explicitly provided filename, or fallback to our new dynamic format
+  link.setAttribute("download", filename || dynamicFilename);
   link.style.visibility = "hidden";
 
   document.body.appendChild(link);

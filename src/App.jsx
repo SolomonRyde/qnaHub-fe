@@ -25,11 +25,14 @@ import DashboardLayout from "./features/adminDashboard/layout/DashbaordLayout";
 import UserManagementPage from "./features/adminDashboard/pages/UserManagementPage";
 import AdminExamsPage from "./features/adminDashboard/pages/ExamManagement";
 import IndustryCategorySubCategory from "./features/adminDashboard/pages/IndustryCategorySubCategory";
-import ManageQuestionsPage from "./features/questions/pages/ManageQuestionsPage";
+import ManageQuestionsPage from "./features/adminDashboard/pages/ManageQuestionsPage";
 import AIQuestionGeneratorPage from "./features/adminDashboard/pages/LLMQuestionGenerator";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { AnalyticsPage } from "./features/adminDashboard/exams/components/UI/AnalyticsPage";
+
+import ExamQuizPage from "./features/exams/pages/ExamQuizPage";
+import ExamResultPage from "./features/exams/pages/ExamResultPage";
 
 function App() {
   const queryClient = new QueryClient({
@@ -70,6 +73,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/exams" element={<ExamsPage />} />
                 <Route path="/exam/:slug" element={<ExamOverviewPage />} />
+                <Route path="/exam/:slug/start" element={<ExamQuizPage />} />
+                <Route path="/exam/:slug/result" element={<ExamResultPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -120,7 +125,10 @@ function App() {
                     path="hierarchy-management"
                     element={<IndustryCategorySubCategory />}
                   />
-                  <Route path="manage-questions" element={<ManageQuestionsPage />} />
+                  <Route
+                    path="manage-questions"
+                    element={<ManageQuestionsPage />}
+                  />
                   <Route
                     path="llm-question-generator"
                     element={<AIQuestionGeneratorPage />}
