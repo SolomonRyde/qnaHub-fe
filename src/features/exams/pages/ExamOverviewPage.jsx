@@ -32,11 +32,14 @@ import {
   Bookmark,
   Share2,
   CheckCircle2,
+  Maximize2,
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { ExamNavbar } from "../components/navigation/ExamNavbar";
 import { useExamBySlug } from "../hooks/useExams";
 import toast from "react-hot-toast";
+// ⚠️ Adjust this path if your AuthContext lives elsewhere in the project.
+import { useAuth } from "../../../context/AuthContext";
 
 import { DIFFICULTY_CONFIG } from "../constants/Difficluty.constants";
 import { TOPIC_COLORS } from "../constants/TopicColors.constatns";
@@ -59,30 +62,12 @@ import { TopicsSection } from "../components/overview/TopicsSection";
 
 const DEFAULT_IMAGE = "/exams/fallback-exam.jpg";
 
-// ─── Primitives ───────────────────────────────────────────────────────────────
-
-// Glass chip — lives on top of the hero image, always white text
-
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
-// ─── Error ────────────────────────────────────────────────────────────────────
-
-// ─── Hero ─────────────────────────────────────────────────────────────────────
-
-// ─── About section ────────────────────────────────────────────────────────────
-
-// ─── Topics section ───────────────────────────────────────────────────────────
-
-// ─── Instructions section ─────────────────────────────────────────────────────
-
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 const ExamOverviewPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [isStarting, setIsStarting] = useState(false);
+  const [showFullscreenNotice, setShowFullscreenNotice] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imgSrc, setImgSrc] = useState(DEFAULT_IMAGE);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -128,20 +113,110 @@ const ExamOverviewPage = () => {
     }
   }, [exam]);
 
-  const handleStartExam = useCallback(async () => {
+  // ✅ FIXED: Properly handle topics_covered - works with array OR string
+
+  // Step 1 — triggered by the "Start Exam" buttons. Just gates on auth and,
+  // if the user is signed in, opens the fullscreen-notice modal. No network
+  // call happens here yet.
+  const handleStartExam = useCallback(() => {
     if (!exam?.id) return;
+
+    // ── Auth gate ────────────────────────────────────────────────────────
+    // Don't let an unauthenticated user get anywhere near the "start exam"
+    // flow — send them to login first, and bring them right back here once
+    // they're signed in.
+    if (authLoading) {
+      toast.error("Checking your session, please try again in a moment.");
+      return;
+    }
+    if (!isAuthenticated) {
+      toast.error("Please log in to start this exam.");
+      navigate("/login", {
+        state: { from: `/exam/${slug}` },
+      });
+      return;
+    }
+
+    setShowFullscreenNotice(true);
+  }, [exam, navigate, slug, authLoading, isAuthenticated]);
+
+  // Step 2 — triggered by the "Continue & Start" button inside the
+  // fullscreen-notice modal. This is still a direct, trusted click, so the
+  // fullscreen request below is allowed to succeed.
+  const confirmAndStartExam = useCallback(async () => {
+    if (!exam?.id) return;
+
     setIsStarting(true);
     try {
-      navigate(`/exam/${exam.slug}/start`, { state: { examId: exam.id } });
+      const res = await fetch(
+        `https://api.rydevalues.cloud/api/v1/exam/${exam.id}/start`,
+        {
+          method: "POST",
+          credentials: "include", // ← this sends the auth cookie
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await res.json();
+
+      // Cookie could have expired between page load and this click — bounce
+      // to login instead of showing a generic error.
+      if (res.status === 401) {
+        setShowFullscreenNotice(false);
+        toast.error("Your session has expired. Please log in again.");
+        navigate("/login", { state: { from: `/exam/${slug}` } });
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(
+          data.message || "Failed to start exam. Please try again.",
+        );
+      }
+
+      // ── Mandatory fullscreen gate ────────────────────────────────────────
+      // The exam attempt already exists on the backend at this point, so we
+      // don't re-create it if fullscreen is denied — we simply refuse to
+      // navigate into the quiz page until the user grants it.
+      try {
+        const el = document.documentElement;
+        const requestFs =
+          el.requestFullscreen ||
+          el.webkitRequestFullscreen ||
+          el.msRequestFullscreen;
+
+        if (!requestFs) {
+          throw new Error("Fullscreen is not supported in this browser.");
+        }
+
+        await requestFs.call(el);
+      } catch (fsErr) {
+        console.error("Fullscreen request failed:", fsErr);
+        toast.error(
+          "Fullscreen mode is mandatory to start this exam. Please allow fullscreen and try again.",
+        );
+        setIsStarting(false);
+        return;
+      }
+
+      setShowFullscreenNotice(false);
+      navigate(`/exam/${exam.slug}/start`, {
+        state: {
+          attemptId: data.attemptId,
+          examId: exam.id,
+          durationMinutes: exam.duration_minutes,
+        },
+      });
     } catch (err) {
       console.error("Failed to start exam:", err);
-      toast.error("Failed to start exam. Please try again.");
+      toast.error(err.message || "Failed to start exam. Please try again.");
     } finally {
       setIsStarting(false);
     }
-  }, [exam, navigate]);
+  }, [exam, navigate, slug]);
 
-  // ✅ FIXED: Properly handle topics_covered - works with array OR string
   const topicsCovered = useMemo(() => {
     if (!exam) return [];
 
@@ -299,6 +374,75 @@ const ExamOverviewPage = () => {
           {exam.total_marks} marks
         </p>
       </div>
+
+      {/* ── Fullscreen notice modal ── shown right after "Start Exam" is
+          clicked, before the fullscreen request is actually made. */}
+      {showFullscreenNotice && (
+        <div
+          className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="fullscreen-notice-title"
+        >
+          <div className="bg-background border border-border rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-7">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <Maximize2 className="h-6 w-6 text-primary" />
+            </div>
+
+            <h3
+              id="fullscreen-notice-title"
+              className="text-lg font-semibold text-foreground mb-2"
+            >
+              This exam runs in fullscreen mode
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+              When you continue, your browser will switch to fullscreen and stay
+              that way for the duration of the exam. Exiting fullscreen,
+              switching tabs, or minimizing the window will be flagged as an
+              integrity violation and may auto-submit your exam.
+            </p>
+
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+              <button
+                onClick={() => setShowFullscreenNotice(false)}
+                disabled={isStarting}
+                className={cn(
+                  "px-5 py-2.5 rounded-xl text-sm font-semibold",
+                  "bg-secondary text-secondary-foreground",
+                  "hover:bg-secondary/80 transition-colors",
+                  "disabled:opacity-55 disabled:cursor-not-allowed",
+                )}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmAndStartExam}
+                disabled={isStarting}
+                autoFocus
+                className={cn(
+                  "px-5 py-2.5 rounded-xl text-sm font-semibold",
+                  "bg-primary text-primary-foreground",
+                  "hover:bg-primary/90 transition-colors",
+                  "disabled:opacity-55 disabled:cursor-not-allowed",
+                  "inline-flex items-center justify-center gap-2",
+                )}
+              >
+                {isStarting ? (
+                  <>
+                    <span className="h-4 w-4 rounded-full border-2 border-primary-foreground/25 border-t-primary-foreground animate-spin" />
+                    Preparing…
+                  </>
+                ) : (
+                  <>
+                    <Maximize2 className="h-4 w-4" />
+                    Continue & Start
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

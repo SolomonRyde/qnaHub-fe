@@ -1,6 +1,6 @@
 export const DIFFICULTY_CONFIG = {
   easy: {
-    label: "Beginner",
+    label: "Easy",
     pill: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30",
     dot: "bg-emerald-500 dark:bg-emerald-400",
     bar: "w-1/3 bg-gradient-to-r from-emerald-400 to-emerald-500",
@@ -14,7 +14,7 @@ export const DIFFICULTY_CONFIG = {
     glow: "shadow-amber-500/10 dark:shadow-amber-500/20",
   },
   hard: {
-    label: "Advanced",
+    label: "Hard",
     pill: "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30",
     dot: "bg-rose-500 dark:bg-rose-400",
     bar: "w-full bg-gradient-to-r from-rose-400 to-rose-500",
