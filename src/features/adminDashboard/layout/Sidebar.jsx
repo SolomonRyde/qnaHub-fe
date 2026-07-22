@@ -1,6 +1,15 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Users, Shield, Key, Settings, BookOpen, Bot, ClipboardList } from "lucide-react";
+import {
+  Users,
+  Shield,
+  Key,
+  Settings,
+  BookOpen,
+  Bot,
+  ClipboardList,
+  BookOpenCheckIcon,
+} from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 const SidebarItem = ({ icon: Icon, label, to, end = false }) => (
@@ -49,14 +58,20 @@ export default function Sidebar() {
         />
 
         <SidebarItem
-  icon={ClipboardList}
-  label="Manage Questions"
-  to="/dashboard-admin/manage-questions"
-/>
+          icon={ClipboardList}
+          label="Manage Questions"
+          to="/dashboard-admin/manage-questions"
+        />
         <SidebarItem
           icon={Bot}
           label="LLM Question Generator"
           to="/dashboard-admin/llm-question-generator"
+        />
+
+        <SidebarItem
+          icon={BookOpenCheckIcon}
+          label="User's Exam Attempts"
+          to="/dashboard-admin/user-exam-attempts"
         />
       </nav>
 

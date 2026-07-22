@@ -281,3 +281,88 @@ export function parseExamData(exam) {
 export function parseExamsList(exams = []) {
   return exams.map(parseExamData).filter(Boolean);
 }
+
+/* ========================================
+   ADMIN: EXAM ATTEMPTS DASHBOARD
+   ======================================== */
+
+// GET /exam/admin/attempts
+// Returns { success, data: [...attempts], stats: {...}, pagination: {...} }
+export async function getAdminExamAttempts(params = {}) {
+  const queryString = buildQueryString({
+    page: params.page || 1,
+    limit: params.limit || 10,
+    search: params.search || undefined,
+    status: params.status || undefined,
+    passed: params.passed ?? undefined, // "true" | "false"
+    examId: params.examId || undefined,
+    sort: params.sort || "created_at:desc",
+    startDate: params.startDate || undefined,
+    endDate: params.endDate || undefined,
+  });
+  const res = await fetch(`${API_BASE}/admin/attempts${queryString}`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+// GET /exam/admin/attempts/export
+// Downloads Excel file
+export async function exportAdminExamAttempts(params = {}) {
+  const queryString = buildQueryString({
+    search: params.search || undefined,
+    status: params.status || undefined,
+    passed: params.passed ?? undefined,
+    examId: params.examId || undefined,
+    sort: params.sort || "created_at:desc",
+    startDate: params.startDate || undefined,
+    endDate: params.endDate || undefined,
+  });
+
+  const res = await fetch(`${API_BASE}/admin/attempts/export${queryString}`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to export");
+  }
+
+  // Handle blob download
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+
+  // Extract filename from Content-Disposition header if available
+  const disposition = res.headers.get("Content-Disposition");
+  let filename = "exam_attempts.xlsx";
+  if (disposition && disposition.indexOf("attachment") !== -1) {
+    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+    const matches = filenameRegex.exec(disposition);
+    if (matches != null && matches[1]) {
+      filename = matches[1].replace(/['"]/g, "");
+    }
+  }
+
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+// GET /exam/admin/attempts/:attemptId
+// Returns { success, data: { ...attempt, answerReview: [...] } }
+export async function getAdminAttemptDetail(attemptId) {
+  const res = await fetch(`${API_BASE}/admin/attempts/${attemptId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
