@@ -1018,7 +1018,7 @@ export default function UserManagementPage() {
               )}
               <PaginationControls
                 currentPage={currentPage}
-                totalPages={Math.ceil(currentList.length / ITEMS_PER_PAGE) || 1}
+                totalPages={totalPages || 1}
                 onPageChange={handlePageChange}
               />
             </div>
