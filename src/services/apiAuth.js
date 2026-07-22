@@ -156,3 +156,56 @@ export const getCurrentUser = async () => {
 
   return res.json();
 };
+
+/* ========================================
+   SELF-SERVICE ACCOUNT MANAGEMENT
+   ======================================== */
+
+// Updates name / phone_number / country_code. Does NOT touch email or password.
+export const updateProfile = async ({ name, phone_number, country_code }) => {
+  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/profile", {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, phone_number, country_code }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || "Failed to update profile");
+  }
+  return data;
+};
+
+// Requires current_password. Sends an OTP to the new email — confirm with
+// the existing verifyOtp() call to finish activating the change.
+export const updateEmail = async ({ email, current_password }) => {
+  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/email", {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, current_password }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || "Failed to update email");
+  }
+  return data;
+};
+
+// Requires current_password + new_password.
+export const changePassword = async ({ current_password, new_password }) => {
+  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/password", {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ current_password, new_password }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || "Failed to change password");
+  }
+  return data;
+};

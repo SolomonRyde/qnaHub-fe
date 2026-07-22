@@ -74,10 +74,21 @@ export function DashboardNavbar() {
           {/* Right Actions */}
           <div className="flex items-center gap-3">
             {/* User Info */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate("/settings")}
+              onKeyDown={(e) => e.key === "Enter" && navigate("/settings")}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
+              title="Account settings"
+            >
               <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg hover:bg-accent transition-colors"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleTheme();
+                }}
+                className="p-2 -m-2 rounded-lg hover:bg-accent transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === "light" ? (
@@ -141,14 +152,23 @@ export function DashboardNavbar() {
                 </Link>
               ))}
               <div className="pt-2 mt-2 border-t border-border">
-                <div className="flex items-center gap-3 px-3 py-2">
+                <Link
+                  to="/settings"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent/50 transition-colors"
+                >
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-foreground">
-                    {user?.name || "User"}
-                  </span>
-                </div>
+                  <div className="min-w-0">
+                    <span className="text-sm font-medium text-foreground block truncate">
+                      {user?.name || "User"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Account settings
+                    </span>
+                  </div>
+                </Link>
                 <Button
                   variant="ghost"
                   size="sm"

@@ -424,13 +424,34 @@ export function DashboardPage() {
               </div>
 
               {user?.role === "admin" && (
+                <>
+                  <Button
+                    variant="default"
+                    onClick={handleAdminDashboard}
+                    className="gap-2 shrink-0"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Admin Dashboard
+                  </Button>
+                  <Button
+                    variant="default"
+                    onClick={() => navigate("/settings")}
+                    className="gap-2 shrink-0"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Update Profile
+                  </Button>
+                </>
+              )}
+
+              {user?.role === "user" && (
                 <Button
                   variant="default"
-                  onClick={handleAdminDashboard}
+                  onClick={() => navigate("/settings")}
                   className="gap-2 shrink-0"
                 >
                   <BookOpen className="w-4 h-4" />
-                  Admin Dashboard
+                  Update Profile
                 </Button>
               )}
             </div>
