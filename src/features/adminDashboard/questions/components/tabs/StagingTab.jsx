@@ -18,6 +18,7 @@ import { StatusBadge } from "../../../../../components/ui/StatusBadge";
 import { DeleteConfirmationModal } from "../../../../../components/ui/DeleteConfirmationModal";
 import { PaginationControls } from "../../../../../components/ui/PaginationControls";
 import { normalizeAnswer, getStagingStatus } from "../../../../../lib/utils";
+import { useAuth } from "../../../../../context/AuthContext";
 
 export function StagingTab(props) {
   const {
@@ -46,8 +47,6 @@ export function StagingTab(props) {
     stagingCurrentPage,
     setStagingCurrentPage,
   } = props;
-
-  console.log("@FIltered Staging Questions: ", filteredStagingQuestions);
 
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
@@ -128,7 +127,7 @@ export function StagingTab(props) {
         />
         <StatCard
           title="Total Staging Questions"
-          value={stagingStatusCounts.total}
+          value={stagingStatusCounts.total || stagingQuestions.length}
           icon={Database}
           variant="info"
           trend="All imported questions"
@@ -169,7 +168,9 @@ export function StagingTab(props) {
         </Button>
         <Button
           onClick={openPushPreview}
-          disabled={stagingStatusCounts.total === 0}
+          disabled={
+            (stagingStatusCounts.total || stagingQuestions.length) === 0
+          }
           className="bg-green-600 text-white hover:bg-green-700"
         >
           <Database className="mr-2 h-4 w-4" /> Push to Main DB
@@ -197,7 +198,7 @@ export function StagingTab(props) {
 
         {stagingStatusCounts.duplicatesInsideStaging === 0 &&
           stagingStatusCounts.alreadyInMainDb === 0 &&
-          stagingStatusCounts.total > 0 && (
+          (stagingStatusCounts.total || stagingQuestions.length) > 0 && (
             <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700 border border-green-200">
               <CheckCircle2 className="h-4 w-4" /> No duplicate questions found
             </div>
@@ -226,16 +227,21 @@ export function StagingTab(props) {
             {isDeletingByStatus ? "Deleting..." : "Delete by Status"}
           </Button>
         </div>
+
+        {/* ✅ FIXED: Delete ALL button now checks actual questions list if counts are broken */}
         <Button
           variant="outline"
           onClick={() => openDeleteModal("all")}
-          disabled={isDeleting || stagingStatusCounts.total === 0}
+          disabled={
+            isDeleting ||
+            (stagingStatusCounts.total || stagingQuestions.length) === 0
+          }
           className="ml-auto border-red-500 text-red-700 hover:bg-red-100 font-bold"
         >
           <Trash2 className="mr-2 h-4 w-4" />{" "}
           {isDeletingAll
             ? "Deleting..."
-            : `Delete ALL (${stagingStatusCounts.total})`}
+            : `Delete ALL (${stagingPagination?.total})`}
         </Button>
       </div>
 
@@ -265,6 +271,16 @@ export function StagingTab(props) {
             <option value="missing">Missing</option>
             <option value="pushed">Pushed</option>
           </select>
+          <Button
+            variant="outline"
+            className="h-11 rounded-xl"
+            onClick={() => {
+              setStagingSearch("");
+              setStagingStatus("all"); // Reset to default
+            }}
+          >
+            Clear
+          </Button>
           <Button
             variant="outline"
             className="h-11 rounded-xl"
