@@ -15,6 +15,7 @@ import { ResendOtpPage } from "./features/authentication/pages/ResendOtpPage";
 import { ForgotPasswordPage } from "./features/authentication/pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./features/authentication/pages/ResetPasswordPage";
 import { DashboardPage } from "./features/userDashboard/pages/DashboardPage";
+import ProfileSettingsPage from "./features/userDashboard/pages/ProfileSettingsPage";
 
 // Features
 import { ProtectedRoute } from "./features/authentication/components/ProtectedRoute";
@@ -27,6 +28,7 @@ import AdminExamsPage from "./features/adminDashboard/pages/ExamManagement";
 import IndustryCategorySubCategory from "./features/adminDashboard/pages/IndustryCategorySubCategory";
 import ManageQuestionsPage from "./features/adminDashboard/pages/ManageQuestionsPage";
 import AIQuestionGeneratorPage from "./features/adminDashboard/pages/LLMQuestionGenerator";
+import UserExamAttempsPage from "./features/adminDashboard/pages/UserExamAttemptsPage";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { AnalyticsPage } from "./features/adminDashboard/exams/components/UI/AnalyticsPage";
@@ -98,6 +100,15 @@ function App() {
                   }
                 />
 
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute allowedRoles={["user", "admin"]}>
+                      <ProfileSettingsPage />
+                    </ProtectedRoute>
+                  }
+                />
+
                 {/* Admin Only */}
 
                 <Route
@@ -132,6 +143,10 @@ function App() {
                   <Route
                     path="llm-question-generator"
                     element={<AIQuestionGeneratorPage />}
+                  />
+                  <Route
+                    path="user-exam-attempts"
+                    element={<UserExamAttempsPage />}
                   />
                 </Route>
 
