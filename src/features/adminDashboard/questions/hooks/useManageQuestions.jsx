@@ -254,11 +254,15 @@ export function useManageQuestions() {
         pagination.stagingCurrentPage,
         pagination.stagingPageSize,
         csvImport.stagingImportId,
+        stagingSearch, // Add search to key
+        stagingStatus, // Add status to key
       ),
       queryFn: async () => {
         const params = {
           page: pagination.stagingCurrentPage,
           limit: pagination.stagingPageSize,
+          status: stagingStatus, // ✅ Pass the search filter
+          search: stagingSearch, // ✅ Pass the status filter
         };
         if (csvImport.stagingImportId)
           params.import_id = csvImport.stagingImportId;
