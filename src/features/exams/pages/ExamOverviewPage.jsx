@@ -57,6 +57,7 @@ import { ExamSidebar } from "../components/overview/ExamSidebar";
 import { ExamSkeleton } from "../components/states/Skeleton";
 import { ExamError } from "../components/states/ExamError";
 import { TopicsSection } from "../components/overview/TopicsSection";
+import ReferralModal from "../components/ReferralModal";
 
 // ─── Design tokens / constants ────────────────────────────────────────────────
 
@@ -65,9 +66,10 @@ const DEFAULT_IMAGE = "/exams/fallback-exam.jpg";
 const ExamOverviewPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuth();
   const [isStarting, setIsStarting] = useState(false);
   const [showFullscreenNotice, setShowFullscreenNotice] = useState(false);
+  const [showReferralModal, setShowReferralModal] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imgSrc, setImgSrc] = useState(DEFAULT_IMAGE);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -137,8 +139,16 @@ const ExamOverviewPage = () => {
       return;
     }
 
+    // ── Referral gate ────────────────────────────────────────────────────
+    // An exam can only be started once the user has saved their referral
+    // source + name. The backend enforces this too (428 REFERRAL_REQUIRED).
+    if (!user?.referral_source || !user?.referral_name) {
+      setShowReferralModal(true);
+      return;
+    }
+
     setShowFullscreenNotice(true);
-  }, [exam, navigate, slug, authLoading, isAuthenticated]);
+  }, [exam, navigate, slug, authLoading, isAuthenticated, user]);
 
   // Step 2 — triggered by the "Continue & Start" button inside the
   // fullscreen-notice modal. This is still a direct, trusted click, so the
@@ -167,6 +177,14 @@ const ExamOverviewPage = () => {
         setShowFullscreenNotice(false);
         toast.error("Your session has expired. Please log in again.");
         navigate("/login", { state: { from: `/exam/${slug}` } });
+        return;
+      }
+
+      // Referral stale/not saved on the account (backend re-checks) — collect
+      // it now, then resume the start flow via the onSaved callback.
+      if (res.status === 428) {
+        setShowFullscreenNotice(false);
+        setShowReferralModal(true);
         return;
       }
 
@@ -374,6 +392,18 @@ const ExamOverviewPage = () => {
           {exam.total_marks} marks
         </p>
       </div>
+
+      {/* ── Referral modal ── shown before starting when the user hasn't
+          saved their referral details yet. On save it resumes the start flow
+          by reopening the fullscreen-notice modal. */}
+      <ReferralModal
+        open={showReferralModal}
+        onClose={() => setShowReferralModal(false)}
+        onSaved={() => {
+          setShowReferralModal(false);
+          setShowFullscreenNotice(true);
+        }}
+      />
 
       {/* ── Fullscreen notice modal ── shown right after "Start Exam" is
           clicked, before the fullscreen request is actually made. */}

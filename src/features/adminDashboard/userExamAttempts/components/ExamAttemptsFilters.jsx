@@ -1,4 +1,5 @@
 import { Search, Calendar, X, Download, Loader2 } from "lucide-react";
+import { REFERRAL_SOURCES } from "../../../../lib/referralSources";
 
 const STATUS_OPTIONS = [
   { value: "", label: "All statuses" },
@@ -10,6 +11,11 @@ const RESULT_OPTIONS = [
   { value: "", label: "All results" },
   { value: "true", label: "Passed" },
   { value: "false", label: "Failed" },
+];
+
+const REFERRAL_OPTIONS = [
+  { value: "", label: "All sources" },
+  ...REFERRAL_SOURCES.map((s) => ({ value: s, label: s })),
 ];
 
 const SORT_OPTIONS = [
@@ -27,6 +33,8 @@ export function ExamAttemptsFilters({
   setStatus,
   passed,
   setPassed,
+  referralSource,
+  setReferralSource,
   sort,
   setSort,
   startDate,
@@ -52,7 +60,7 @@ export function ExamAttemptsFilters({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search by user, email, or exam..."
+            placeholder="Search by user, email, exam, or referral name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -85,6 +93,18 @@ export function ExamAttemptsFilters({
           className="px-3 py-2.5 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
         >
           {RESULT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={referralSource}
+          onChange={(e) => setReferralSource(e.target.value)}
+          className="px-3 py-2.5 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+        >
+          {REFERRAL_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}
             </option>
