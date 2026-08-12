@@ -7,6 +7,7 @@ import {
   ShieldAlert,
   ArrowLeft,
   BadgeCheck,
+  Share2,
 } from "lucide-react";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { useAuth } from "../../../context/AuthContext";
@@ -15,9 +16,11 @@ import { initialsOf, formatDate } from "../components/helpers";
 import ProfileTab from "../components/tabs/ProfileTab";
 import EmailTab from "../components/tabs/EmailTab";
 import PasswordTab from "../components/tabs/PasswordTab";
+import ReferralTab from "../components/tabs/ReferralTab";
 
 const TABS = [
   { id: "profile", label: "Profile", icon: User },
+  { id: "referral", label: "Referral", icon: Share2 },
   { id: "email", label: "Email", icon: Mail },
   { id: "password", label: "Password", icon: Lock },
 ];
@@ -111,6 +114,9 @@ export default function ProfileSettingsPage() {
 
         {activeTab === "profile" && (
           <ProfileTab user={user} onUpdated={(u) => login({ user: u })} />
+        )}
+        {activeTab === "referral" && (
+          <ReferralTab user={user} onUpdated={(u) => login({ user: u })} />
         )}
         {activeTab === "email" && (
           <EmailTab user={user} onUpdated={(u) => login({ user: u })} />

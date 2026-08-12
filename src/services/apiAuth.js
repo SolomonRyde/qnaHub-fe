@@ -177,6 +177,22 @@ export const updateProfile = async ({ name, phone_number, country_code }) => {
   return data;
 };
 
+// Saves the logged-in user's referral source + name.
+export const updateReferral = async ({ referral_source, referral_name }) => {
+  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/referral", {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ referral_source, referral_name }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || "Failed to update referral");
+  }
+  return data;
+};
+
 // Requires current_password. Sends an OTP to the new email — confirm with
 // the existing verifyOtp() call to finish activating the change.
 export const updateEmail = async ({ email, current_password }) => {

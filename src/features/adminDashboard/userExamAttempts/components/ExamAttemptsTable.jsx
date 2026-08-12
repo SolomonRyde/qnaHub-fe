@@ -55,6 +55,7 @@ export function ExamAttemptsTable({
               <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 <th className="px-4 py-3">User</th>
                 <th className="px-4 py-3">Exam</th>
+                <th className="px-4 py-3">Referral</th>
                 <th className="px-4 py-3">Score</th>
                 <th className="px-4 py-3">Percentage</th>
                 <th className="px-4 py-3">Status</th>
@@ -66,7 +67,7 @@ export function ExamAttemptsTable({
             <tbody>
               {Array.from({ length: pageSize }).map((_, i) => (
                 <tr key={i} className="border-b border-border">
-                  <td colSpan={8} className="px-4 py-3">
+                  <td colSpan={9} className="px-4 py-3">
                     <Skeleton className="h-5 w-full" />
                   </td>
                 </tr>
@@ -100,6 +101,7 @@ export function ExamAttemptsTable({
             <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               <th className="px-4 py-3">User</th>
               <th className="px-4 py-3">Exam</th>
+              <th className="px-4 py-3">Referral</th>
               <th className="px-4 py-3">Score</th>
               <th className="px-4 py-3">Percentage</th>
               <th className="px-4 py-3">Status</th>
@@ -125,6 +127,14 @@ export function ExamAttemptsTable({
                   <p className="text-xs text-muted-foreground capitalize">
                     {a.difficulty}
                   </p>
+                </td>
+                <td className="px-4 py-3">
+                  <p className="text-foreground">{a.referral_name || "—"}</p>
+                  {a.referral_source && (
+                    <p className="text-xs text-muted-foreground">
+                      {a.referral_source}
+                    </p>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-foreground">
                   {a.status === "submitted"

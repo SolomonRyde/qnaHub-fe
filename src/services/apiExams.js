@@ -296,6 +296,7 @@ export async function getAdminExamAttempts(params = {}) {
     status: params.status || undefined,
     passed: params.passed ?? undefined, // "true" | "false"
     examId: params.examId || undefined,
+    referralSource: params.referralSource || undefined,
     sort: params.sort || "created_at:desc",
     startDate: params.startDate || undefined,
     endDate: params.endDate || undefined,
@@ -316,6 +317,7 @@ export async function exportAdminExamAttempts(params = {}) {
     status: params.status || undefined,
     passed: params.passed ?? undefined,
     examId: params.examId || undefined,
+    referralSource: params.referralSource || undefined,
     sort: params.sort || "created_at:desc",
     startDate: params.startDate || undefined,
     endDate: params.endDate || undefined,

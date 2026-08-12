@@ -14,6 +14,7 @@ export default function UserExamAttemptsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [passed, setPassed] = useState("");
+  const [referralSource, setReferralSource] = useState("");
   const [sort, setSort] = useState("created_at:desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(30);
@@ -31,7 +32,7 @@ export default function UserExamAttemptsPage() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedSearch, status, passed, sort, startDate, endDate]);
+  }, [debouncedSearch, status, passed, referralSource, sort, startDate, endDate]);
 
   const { data, isLoading, isFetching, error } = useAdminExamAttempts({
     page: currentPage,
@@ -39,6 +40,7 @@ export default function UserExamAttemptsPage() {
     search: debouncedSearch || undefined,
     status: status || undefined,
     passed: passed || undefined,
+    referralSource: referralSource || undefined,
     sort,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
@@ -51,6 +53,7 @@ export default function UserExamAttemptsPage() {
         search: debouncedSearch || undefined,
         status: status || undefined,
         passed: passed || undefined,
+        referralSource: referralSource || undefined,
         sort,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
@@ -115,6 +118,8 @@ export default function UserExamAttemptsPage() {
           setStatus={setStatus}
           passed={passed}
           setPassed={setPassed}
+          referralSource={referralSource}
+          setReferralSource={setReferralSource}
           sort={sort}
           setSort={setSort}
           startDate={startDate}

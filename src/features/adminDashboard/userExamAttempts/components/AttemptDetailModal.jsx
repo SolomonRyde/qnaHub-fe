@@ -1,4 +1,4 @@
-import { CheckCircle2, Loader2, Mail, User, X, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Share2, User, X, XCircle } from "lucide-react";
 import { useAdminAttemptDetail } from "../hooks/useAdminExamAttempts";
 import { Badge } from "../../../../components/ui/Badge";
 
@@ -42,6 +42,15 @@ export function AttemptDetailModal({ attemptId, open, onOpenChange }) {
                   <Mail className="w-3.5 h-3.5" />
                   {attempt.user_email}
                 </span>
+                {attempt.referral_name && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Share2 className="w-3.5 h-3.5" />
+                    {attempt.referral_name}
+                    {attempt.referral_source
+                      ? ` · ${attempt.referral_source}`
+                      : ""}
+                  </span>
+                )}
               </div>
             )}
           </div>

@@ -193,6 +193,34 @@ export const EditUserModal = ({ isOpen, onClose, user, onSave, isPending }) => {
             </div>
           </div>
 
+          {/* Referral Source - READ-ONLY */}
+          <div className="grid grid-cols-3 gap-4 items-center">
+            <label className="text-sm font-medium text-muted-foreground">
+              Referral Source
+            </label>
+            <div className="col-span-2">
+              <Input
+                value={currentUser.referral_source || "N/A"}
+                disabled
+                className="bg-muted/50"
+              />
+            </div>
+          </div>
+
+          {/* Referral Name - READ-ONLY */}
+          <div className="grid grid-cols-3 gap-4 items-center">
+            <label className="text-sm font-medium text-muted-foreground">
+              Referral Name
+            </label>
+            <div className="col-span-2">
+              <Input
+                value={currentUser.referral_name || "N/A"}
+                disabled
+                className="bg-muted/50"
+              />
+            </div>
+          </div>
+
           {/* Last Login */}
           <div className="grid grid-cols-3 gap-4 items-center">
             <label className="text-sm font-medium text-muted-foreground">
