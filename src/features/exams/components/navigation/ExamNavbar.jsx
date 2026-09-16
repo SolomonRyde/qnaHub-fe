@@ -99,7 +99,7 @@ export function ExamNavbar({ examTitle }) {
                   scrolled ? "text-foreground" : "text-white",
                 )}
               >
-                Examify
+                QnaHub
               </span>
             </Link>
           </div>

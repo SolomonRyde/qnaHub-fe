@@ -58,6 +58,7 @@ import { ExamSkeleton } from "../components/states/Skeleton";
 import { ExamError } from "../components/states/ExamError";
 import { TopicsSection } from "../components/overview/TopicsSection";
 import ReferralModal from "../components/ReferralModal";
+import { Footer } from "../../landingPage/components/Footer";
 
 // ─── Design tokens / constants ────────────────────────────────────────────────
 
@@ -276,13 +277,13 @@ const ExamOverviewPage = () => {
         description: `You have ${exam.duration_minutes} minutes for all ${exam.no_of_questions} questions — roughly ${Math.round((exam.duration_minutes / exam.no_of_questions) * 60)} seconds each.`,
         type: "info",
       },
-      {
-        icon: Shield,
-        title: "No Back Navigation",
-        description:
-          "Once you move past a question you cannot return. Think carefully before submitting.",
-        type: "warning",
-      },
+      // {
+      //   icon: Shield,
+      //   title: "No Back Navigation",
+      //   description:
+      //     "Once you move past a question you cannot return. Think carefully before submitting.",
+      //   type: "warning",
+      // },
       {
         icon: AlertTriangle,
         title: "Auto-Submit on Timeout",
@@ -473,6 +474,7 @@ const ExamOverviewPage = () => {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 };

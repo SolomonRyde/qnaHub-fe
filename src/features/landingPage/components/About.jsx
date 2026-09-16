@@ -33,7 +33,7 @@ const steps = [
 
 const reasons = [
   { icon: Target, text: "Personalized learning paths" },
-  { icon: Users, text: "Trusted by 50K+ professionals" },
+  { icon: Users, text: "Trusted by 50+ professionals" },
   { icon: Zap, text: "Instant feedback and results" },
   { icon: CheckCircle, text: "Industry-recognized certificates" },
 ];
@@ -111,7 +111,7 @@ export function About() {
                 <h4 className="text-xl font-bold text-foreground mb-1">
                   JavaScript Mastery
                 </h4>
-                <p className="text-muted-foreground mb-4">John Developer</p>
+                <p className="text-muted-foreground mb-4">John Doe</p>
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <CheckCircle className="w-4 h-4 text-primary" />
                   <span>Verified on Blockchain</span>

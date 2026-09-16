@@ -2,18 +2,20 @@ import { Button } from "../../../components/ui/Button";
 import { Badge } from "../../../components/ui/Badge";
 import { ArrowRight, Sparkles, Users, Award, Clock } from "lucide-react";
 import { HeroCarousel } from "./HeroCarousel";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
-  { icon: Users, value: "50,000+", label: "Learners Practicing Daily" },
-  { icon: Award, value: "1000+", label: " Unique AI-Generated Tests" },
+  { icon: Users, value: "500+", label: "Learners Practicing Daily" },
+  { icon: Award, value: "20+", label: " Unique AI-Generated Tests" },
   { icon: Clock, value: "24/7", label: " Practice Anytime" },
 ];
 
 export function Hero() {
+  const navigate = useNavigate();
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center pt-14 overflow-hidden"
+      className="relative flex items-center justify-center pt-14 overflow-hidden"
     >
       {/* Background Gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/10" />
@@ -38,11 +40,15 @@ export function Hero() {
               Unlock your potential and fast-track your success with our
               AI-powered exam platform. Gain valuable certifications, sharpen
               your skills, and stay ahead with real-time, personalized questions
-              designed to match your expertise level—every time you practice.
+              designed to match your expertise level every time you practice.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="gap-2">
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={() => navigate("/exams")}
+              >
                 Start Free Exam
                 <ArrowRight className="w-4 h-4" />
               </Button>

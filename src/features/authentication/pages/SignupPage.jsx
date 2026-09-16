@@ -207,6 +207,7 @@ export function SignupPage() {
       <AuthCard
         title="Create an account"
         description="Get started with your free exam platform"
+        className="mt-16"
         footer={
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}

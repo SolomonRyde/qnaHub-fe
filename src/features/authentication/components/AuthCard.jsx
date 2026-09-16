@@ -17,7 +17,7 @@ export function AuthCard({
   ...props
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10 p-4">
+    <div className="flex items-center justify-center  p-4 mt-8">
       <Card
         className={cn("w-full max-w-md shadow-xl border-border", className)}
         {...props}

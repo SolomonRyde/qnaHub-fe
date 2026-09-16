@@ -642,7 +642,7 @@ const ExamResultPage = () => {
             {passed ? (
               <>
                 <button className="px-5 py-3 text-sm font-semibold text-white bg-blue-900 rounded hover:bg-blue-800 text-left">
-                  📄 Download certificate
+                  📄 Download certificate (comming soon...)
                 </button>
                 <button
                   onClick={() => navigate("/exams")}

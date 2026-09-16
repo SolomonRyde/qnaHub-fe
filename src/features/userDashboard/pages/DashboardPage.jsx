@@ -342,7 +342,7 @@ export function DashboardPage() {
 
   const handleStartExam = () => navigate("/exams");
   const handleViewResults = () => navigate("/results");
-  const handleViewCertificates = () => navigate("/certificates");
+  // const handleViewCertificates = () => navigate("/certificates");
   const handleOpenSettings = () => navigate("/settings");
   const handleAdminDashboard = () => navigate("/dashboard-admin");
 
@@ -370,9 +370,9 @@ export function DashboardPage() {
       iconClass: "bg-amber-500/15 text-amber-600",
     },
     {
-      label: "Certificates",
+      label: "Certificates (soon)",
       icon: Award,
-      onClick: handleViewCertificates,
+      // onClick: handleViewCertificates,
       iconClass: "bg-violet-500/15 text-violet-600",
     },
     {
