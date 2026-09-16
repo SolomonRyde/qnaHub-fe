@@ -12,24 +12,24 @@ const faqs = [
       "Our AI uses advanced language models trained on millions of educational materials. It generates unique, contextually relevant questions based on the topic and difficulty level you choose.",
   },
   {
-    question: "Are the certificates recognized by employers?",
+    question: "Are QnaHub certificates recognized by employers or Microsoft?",
     answer:
-      "Yes! Our certificates are verified on the blockchain and recognized by many tech companies. Each certificate has a unique verification code that employers can use to confirm its authenticity.",
+      "QnaHub certificates are provided for self-declaration and skill-demonstration purposes. They're independent practice assessments and aren't issued, endorsed, or recognized by Microsoft or any third-party certification body.",
   },
   {
     question: "Can I retake an exam if I fail?",
     answer:
-      "Absolutely! Free users can retake exams after 24 hours. Pro and Enterprise users have unlimited retakes with no waiting period.",
+      "Yes — you can retake exams to try for a better score, subject to your plan's access limits. Practice Lite includes limited retakes; Smart Prep and Ultimate Success offer broader access.",
   },
   {
     question: "How long are the certificates valid?",
     answer:
-      "Your certificates never expire. However, we recommend retaking exams every 1-2 years to stay current with evolving technologies.",
+      "Your certificates never expire. However, we recommend retaking exams every 1-2 years to stay current with evolving skills.",
   },
   {
-    question: "Can I create custom exams for my team?",
+    question: "Do I need to create an account to take exams?",
     answer:
-      "Yes! Enterprise users can create custom exams tailored to their specific needs, including custom topics, branding, and difficulty levels.",
+      "Yes. Creating a free account allows you to track your progress, view your exam history, and download certificates for eligible assessments.",
   },
 ];
 
@@ -42,7 +42,7 @@ export function FAQ() {
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-muted-foreground">
-            Everything you need to know about Examify.
+            Everything you need to know about QnaHub.
           </p>
         </div>
 

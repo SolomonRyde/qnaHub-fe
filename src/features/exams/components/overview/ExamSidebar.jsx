@@ -16,7 +16,8 @@ import { TRUST_ITEMS } from "../../constants/TrustItems.constants";
 export const ExamSidebar = memo(({ exam, isStarting, onStart }) => {
   const diff =
     DIFFICULTY_CONFIG[exam.difficulty] || DIFFICULTY_CONFIG.intermediate;
-  const passingScore = Math.round(exam.total_marks * 0.6);
+  // const passingScore = Math.round(exam.total_marks * 0.6);
+  const passingScore = 90;
 
   return (
     <div className="sticky top-24 space-y-3 pb-24 lg:pb-0">
@@ -88,11 +89,12 @@ export const ExamSidebar = memo(({ exam, isStarting, onStart }) => {
             {[
               {
                 label: "Passing Score",
-                value: `${passingScore} / ${exam.total_marks}`,
+                // value: `${passingScore} / ${exam.total_marks}`,
+                value: `${passingScore} %`,
               },
               { label: "Language", value: "English" },
               { label: "Attempt Type", value: "Online · Proctored" },
-              { label: "Certificate", value: "Issued on Pass" },
+              // { label: "Certificate", value: "Issued on Pass" },
             ].map(({ label, value }, i) => (
               <div key={i} className="flex items-center justify-between py-2.5">
                 <span className="text-muted-foreground">{label}</span>
@@ -152,7 +154,7 @@ export const ExamSidebar = memo(({ exam, isStarting, onStart }) => {
           <p className="text-[10px] text-center text-muted-foreground/70">
             By starting, you agree to our{" "}
             <a
-              href="#"
+              href="/terms-and-conditions"
               className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
             >
               Terms &amp; Conditions

@@ -33,7 +33,7 @@ const features = [
     icon: Shield,
     title: "Verified Certificates",
     description:
-      "Earn blockchain-verified certificates that employers can trust and verify instantly.",
+      "Earn verified certificates that employers can trust and verify instantly.",
     color: "text-blue-500",
     bgColor: "bg-blue-500/10",
   },
@@ -49,7 +49,7 @@ const features = [
     icon: Target,
     title: " Exam-Oriented Practice",
     description:
-      "Practice questions designed exactly like real aptitude exams asked in placements and competitive tests.",
+      "Practice questions designed like real aptitude exams asked in placements and competitive tests.",
     color: "text-rose-500",
     bgColor: "bg-rose-500/10",
   },
@@ -57,7 +57,7 @@ const features = [
     icon: Sparkles,
     title: "Adaptive Difficulty",
     description:
-      "Questions automatically adjust to your level—easy to start, challenging to master.",
+      "Questions automatically adjust to your level easy to start, challenging to master.",
     color: "text-indigo-500",
     bgColor: "bg-indigo-500/10",
   },
@@ -149,7 +149,7 @@ export function Features() {
             Why Students Choose Us
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our platform combines cutting-edge AI technology with proven
+            Our platform combines cutting edge AI technology with proven
             learning methodologies to help you succeed.
           </p>
         </div>

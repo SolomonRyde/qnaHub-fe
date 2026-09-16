@@ -1,10 +1,28 @@
 import { Github, GraduationCap, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = {
-  Product: ["Features", "Pricing", "Exams", "Categories", "Enterprise"],
-  Company: ["About", "Blog", "Careers", "Contact", "Press"],
-  Resources: ["Documentation", "Help Center", "Community", "Partners", "API"],
-  Legal: ["Privacy", "Terms", "Cookies", "Licenses"],
+  Product: [
+    { text: "Pricing", href: "/#pricing" },
+    { text: "Exams", href: "/exams" },
+  ],
+  Company: [
+    { text: "About", href: "/about-us" },
+    { text: "Contact", href: "/contact-us" },
+  ],
+  Resources: [
+    // { text: "Documentation", href: "#" },
+    { text: "Help Center", href: "/help-center" },
+    // { text: "Community", href: "#" },
+    // { text: "Partners", href: "#" },
+    // { text: "API", href: "#" },
+  ],
+  Legal: [
+    { text: "Privacy", href: "/privacy-policy" },
+    { text: "Terms", href: "/terms-and-conditions" },
+    { text: "Cookies", href: "/cookie-policy" },
+    { text: "Refund Policy", href: "/refund-and-cancellation-policy" },
+  ],
 };
 
 const socialLinks = [
@@ -23,13 +41,13 @@ export function Footer() {
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground">
                 <GraduationCap className="w-6 h-6" />
               </div>
-              <span className="text-xl font-bold text-foreground">Examify</span>
+              <span className="text-xl font-bold text-foreground">QnHub</span>
             </a>
             <p className="text-muted-foreground mb-6 max-w-xs">
               AI-powered certification exams to help you master new skills and
               advance your career.
             </p>
-            <div className="flex items-center gap-4 mb-4">
+            {/* <div className="flex items-center gap-4 mb-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
@@ -40,9 +58,9 @@ export function Footer() {
                   <social.icon className="w-5 h-5 text-muted-foreground" />
                 </a>
               ))}
-            </div>
+            </div> */}
             <span className="text-muted-foreground text-sm">
-              Copyright &copy; 2026 by rydefoundation.in. All rights reserved.
+              Copyright &copy; 2026 by Ryde Consulting. All rights reserved.
             </span>
           </div>
 
@@ -51,13 +69,26 @@ export function Footer() {
               <h4 className="font-semibold text-foreground mb-4">{category}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link}
-                    </a>
+                  <li key={link.text}>
+                    {link.href === "#" ? (
+                      <span className="text-muted-foreground cursor-not-allowed opacity-60">
+                        {link.text}
+                      </span>
+                    ) : link.href.startsWith("/") ? (
+                      <Link
+                        to={link.href}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.text}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.text}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

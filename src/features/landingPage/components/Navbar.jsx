@@ -8,9 +8,9 @@ import { cn } from "../../../lib/utils";
 
 const navLinks = [
   { name: "Home", href: "/", type: "route" },
-  { name: "Pricing", href: "#pricing", type: "anchor" },
+  { name: "Pricing", href: "/pricing", type: "route" },
   { name: "Exams", href: "/exams", type: "route" },
-  { name: "About", href: "#about", type: "anchor" },
+  { name: "About", href: "/about-us", type: "route" },
 ];
 
 export function Navbar() {
@@ -65,10 +65,9 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-sm"
-          : "bg-transparent",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/80 backdrop-blur-lg border-b border-border shadow-sm",
+        // ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-sm"
+        // : "bg-transparent",
       )}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,7 +77,7 @@ export function Navbar() {
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground">
               <GraduationCap className="w-6 h-6" />
             </div>
-            <span className="text-xl font-bold">Examify</span>
+            <span className="text-xl font-bold">QnaHub</span>
           </Link>
 
           {/* Desktop Nav */}
