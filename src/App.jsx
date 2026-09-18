@@ -36,6 +36,22 @@ import { AnalyticsPage } from "./features/adminDashboard/exams/components/UI/Ana
 import ExamQuizPage from "./features/exams/pages/ExamQuizPage";
 import ExamResultPage from "./features/exams/pages/ExamResultPage";
 
+// Legal Pages
+import AboutUsPage from "./features/legal/pages/AboutUsPage";
+import ContactUsPage from "./features/legal/pages/ContactUsPage";
+import TermsAndConditionsPage from "./features/legal/pages/TermsAndConditionsPage";
+import PrivacyPolicyPage from "./features/legal/pages/PrivacyPolicyPage";
+import RefundPolicyPage from "./features/legal/pages/RefundPolicyPage";
+import CookiePolicyPage from "./features/legal/pages/CookiePolicyPage";
+import AcademicIntegrityPage from "./features/legal/pages/AcademicIntegrityPage";
+import SubscriptionPricingPolicyPage from "./features/legal/pages/SubscriptionPricingPolicyPage";
+import HelpCenterPage from "./features/legal/pages/HelpCenterPage";
+import CookieConsentBanner from "./features/legal/components/CookieConsentBanner";
+import PricingPage from "./features/legal/pages/PricingPage";
+
+// Analytics
+import AnalyticsListener from "./components/AnalyticsListener";
+
 function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -69,6 +85,8 @@ function App() {
             }}
           />
           <BrowserRouter>
+            <CookieConsentBanner />
+            <AnalyticsListener />
             <div className="min-h-screen bg-background">
               <Routes>
                 {/* Public Routes */}
@@ -89,6 +107,30 @@ function App() {
                   path="/reset-password/:token"
                   element={<ResetPasswordPage />}
                 />
+
+                {/* Legal & Policy Pages */}
+                <Route path="/about-us" element={<AboutUsPage />} />
+                <Route path="/contact-us" element={<ContactUsPage />} />
+                <Route
+                  path="/terms-and-conditions"
+                  element={<TermsAndConditionsPage />}
+                />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route
+                  path="/refund-and-cancellation-policy"
+                  element={<RefundPolicyPage />}
+                />
+                <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+                <Route
+                  path="/academic-integrity-policy"
+                  element={<AcademicIntegrityPage />}
+                />
+                <Route
+                  path="/subscription-and-pricing-policy"
+                  element={<SubscriptionPricingPolicyPage />}
+                />
+                <Route path="/help-center" element={<HelpCenterPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
 
                 {/* Dashboard (User + Admin) */}
                 <Route
