@@ -1,0 +1,106 @@
+/* Typography for .legal-richtext blocks only.
+   Scoped by class, not by bare tag selectors on the page/article level,
+   so it can never leak into a nested component's own markup
+   (this is what caused the Accordion <h3> font-size bug previously). */
+
+.legal-richtext > * + * {
+  margin-top: 1rem;
+}
+
+.legal-richtext h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-richtext h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-richtext p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: hsl(var(--muted-foreground));
+}
+
+.legal-richtext strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.legal-richtext ul,
+.legal-richtext ol {
+  margin-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.legal-richtext li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.legal-richtext ul {
+  list-style-type: none;
+}
+
+.legal-richtext ul > li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.legal-richtext ul > li::before {
+  content: "•";
+  color: hsl(var(--primary));
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+}
+
+.legal-richtext ul.no-bullets > li::before {
+  content: none;
+}
+
+.legal-richtext ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.legal-richtext ol > li::marker {
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.legal-richtext a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.legal-richtext blockquote {
+  border-left: 4px solid hsl(var(--primary) / 0.5);
+  padding: 1rem 0 1rem 1.5rem;
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .legal-richtext h2 {
+    font-size: 1.375rem;
+  }
+  .legal-richtext h3 {
+    font-size: 1.125rem;
+  }
+}
