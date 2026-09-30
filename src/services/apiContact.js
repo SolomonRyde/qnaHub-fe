@@ -1,3 +1,6 @@
+import { apiClient } from "../lib/apiClient.js";
+import { API_PATHS } from "../config/api.js";
+
 export const sendContactMessage = async ({
   name,
   email,
@@ -5,19 +8,11 @@ export const sendContactMessage = async ({
   message,
   company,
 }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/contact", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, subject, message, company }),
+  return apiClient.post(API_PATHS.CONTACT, {
+    name,
+    email,
+    subject,
+    message,
+    company,
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Failed to send message");
-  }
-
-  return data;
 };

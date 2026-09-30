@@ -23,9 +23,9 @@ import { cn } from "../../../../lib/utils";
 
 const NAV_LINKS = [
   { name: "Home", href: "/", type: "route" },
-  { name: "Pricing", href: "#pricing", type: "anchor" },
+  { name: "Pricing", href: "/pricing", type: "route" },
   { name: "Exams", href: "/exams", type: "route" },
-  { name: "About", href: "#about", type: "anchor" },
+  { name: "About", href: "/about-us", type: "route" },
 ];
 
 // ─── ExamNavbar ───────────────────────────────────────────────────────────────

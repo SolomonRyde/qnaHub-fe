@@ -58,10 +58,6 @@ export function Navbar() {
   // ✅ Prevent flicker before auth loads
   if (loading) return null;
 
-  // console.log("USER:", user);
-  // console.log("AUTH:", isAuthenticated);
-  // console.log("PATH:", location.pathname);
-
   return (
     <header
       className={cn(

@@ -12,7 +12,6 @@ import { ImportDetailsModal } from "../questions/components/modals/ImportDetails
 
 export default function ManageQuestionsPage() {
   const methods = useManageQuestions();
-  console.log("from main page: ", methods.filteredStagingQuestions);
   const { activeTab, setActiveTab, setIsImportModalOpen, setImportStep } =
     methods;
 

@@ -20,13 +20,15 @@ export const useVerifyOtp = () => {
         toast.success("Login successful 🎉");
         navigate("/dashboard");
       } else {
-        toast.error("Something went wrong");
+        // Show the actual error message from backend
+        toast.error(data.message || "Verification failed");
       }
     },
 
     onError: (err) => {
-      toast.error("Invalid OTP");
-      console.log("OTP ERROR:", err);
+      // Show the actual error message from backend (e.g., rate limit messages)
+      toast.error(err.message || "Invalid OTP");
+      console.log(err);
     },
   });
 

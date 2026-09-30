@@ -87,7 +87,7 @@ export function useMainDbMutations() {
     try {
       await deleteQuestionMutation.mutateAsync(id);
     } catch (error) {
-      console.error("Delete failed:", error);
+      console.error(error);
     }
   }
 

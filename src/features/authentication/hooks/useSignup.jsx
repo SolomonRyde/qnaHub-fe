@@ -10,7 +10,6 @@ export const useSignup = () => {
     mutationFn: signupApi,
 
     onSuccess: (data, variables) => {
-      console.log("DATA", data);
       toast.success(
         "Account successfully created! Please verify the new account from the user'\s mail address",
       );
@@ -21,7 +20,7 @@ export const useSignup = () => {
     },
 
     onError: (err) => {
-      console.log("SIGN UP ERROR:", err);
+      console.log(err);
 
       toast.error(err.message || "Signup failed");
     },

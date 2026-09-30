@@ -49,8 +49,6 @@ const AdminExamsPage = () => {
   const { filters, updateFilter, clearFilters, activeFilterCount } =
     useExamFilters();
 
-  console.log("OVR_VIW :", filters.difficulty);
-
   const { data, isLoading, error } = useAdminExams({
     page: currentPage,
     limit: pageSize,

@@ -12,8 +12,9 @@ export const useForgotPassword = () => {
       );
     },
 
-    onError: () => {
-      toast.error("Something went wrong");
+    onError: (err) => {
+      // Show the actual error message from backend (e.g., rate limit messages)
+      toast.error(err.message || "Something went wrong");
     },
   });
 

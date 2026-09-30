@@ -11,8 +11,9 @@ export const useResendOtp = () => {
     },
 
     onError: (err) => {
-      toast.error("Failed to Resend OTP, please try again");
-      console.log("RESEND OTP ERROR:", err);
+      // Show the actual error message from backend (e.g., rate limit messages)
+      toast.error(err.message || "Failed to Resend OTP, please try again");
+      console.log(err);
     },
   });
 

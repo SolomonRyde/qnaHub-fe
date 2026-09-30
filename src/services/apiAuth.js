@@ -1,3 +1,6 @@
+import { apiClient } from "../lib/apiClient.js";
+import { API_PATHS } from "../config/api.js";
+
 export const signup = async ({
   name,
   email,
@@ -5,71 +8,28 @@ export const signup = async ({
   phone_number,
   country_code,
 }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      password,
-      phone_number,
-      country_code,
-    }),
+  const data = await apiClient.post(`${API_PATHS.AUTH}/signup`, {
+    name,
+    email,
+    password,
+    phone_number,
+    country_code,
   });
-
-  const data = await res.json();
-  console.log("RESPONSE:", data);
-
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Signup failed");
-  }
 
   return data;
 };
 
 export const verifyOtp = async ({ email, otp }) => {
-  const res = await fetch(
-    "https://api.rydevalues.cloud/api/v1/auth/verify-otp",
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, otp }),
-    },
-  );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    console.log("ERROR:", data.message);
-    throw new Error(data.message || "OTP verification failed");
-  }
+  const data = await apiClient.post(`${API_PATHS.AUTH}/verify-otp`, {
+    email,
+    otp,
+  });
 
   return data;
 };
 
 export const resendOtp = async ({ email }) => {
-  const res = await fetch(
-    "https://api.rydevalues.cloud/api/v1/auth/resend-otp",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    },
-  );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    console.log("ERROR:", data.message);
-    throw new Error(data.message || "Please enter a valid email address");
-  }
+  const data = await apiClient.post(`${API_PATHS.AUTH}/resend-otp`, { email });
 
   return data;
 };
@@ -77,84 +37,44 @@ export const resendOtp = async ({ email }) => {
 // services/apiAuth.js
 
 export const login = async ({ email, password }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/login", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
+  const data = await apiClient.post(`${API_PATHS.AUTH}/login`, {
+    email,
+    password,
   });
-
-  const data = await res.json();
-
-  // if (!res.ok) {
-  //   console.log("ERROR:", data.message);
-  //   throw new Error(data.message || "Login failed");
-  // }
-
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Signup failed");
-  }
 
   return data; // { token, user }
 };
 
 export async function forgotPassword(email) {
-  const res = await fetch(
-    "https://api.rydevalues.cloud/api/v1/auth/forgot-password",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    },
-  );
-  const data = await res.json();
-  if (!res.ok) {
-    console.log("ERROR:", data.message);
-    throw new Error(data.message);
-  }
+  const data = await apiClient.post(`${API_PATHS.AUTH}/forgot-password`, {
+    email,
+  });
 
   return data;
 }
 
 export async function resetPassword({ token, new_password }) {
-  const res = await fetch(
-    "https://api.rydevalues.cloud/api/v1/auth/reset-password",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token, new_password }),
-    },
-  );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    console.log("ERROR:", data.message);
-    throw new Error(data.message || "Failed to reset password");
-  }
+  const data = await apiClient.post(`${API_PATHS.AUTH}/reset-password`, {
+    token,
+    new_password,
+  });
 
   return data;
 }
 
 export const getCurrentUser = async () => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/me", {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (res.status === 401) return null;
-
-  if (!res.ok) {
+  try {
+    const data = await apiClient.get(`${API_PATHS.AUTH}/me`);
+    return data;
+  } catch (error) {
+    if (
+      error.message.includes("401") ||
+      error.message.includes("Unauthorized")
+    ) {
+      return null;
+    }
     throw new Error("Something went wrong");
   }
-
-  return res.json();
 };
 
 /* ========================================
@@ -163,65 +83,42 @@ export const getCurrentUser = async () => {
 
 // Updates name / phone_number / country_code. Does NOT touch email or password.
 export const updateProfile = async ({ name, phone_number, country_code }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/profile", {
-    method: "PATCH",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, phone_number, country_code }),
+  const data = await apiClient.patch(`${API_PATHS.AUTH}/profile`, {
+    name,
+    phone_number,
+    country_code,
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Failed to update profile");
-  }
   return data;
 };
 
 // Saves the logged-in user's referral source + name.
 export const updateReferral = async ({ referral_source, referral_name }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/referral", {
-    method: "PATCH",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ referral_source, referral_name }),
+  const data = await apiClient.patch(`${API_PATHS.AUTH}/referral`, {
+    referral_source,
+    referral_name,
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Failed to update referral");
-  }
   return data;
 };
 
 // Requires current_password. Sends an OTP to the new email — confirm with
 // the existing verifyOtp() call to finish activating the change.
 export const updateEmail = async ({ email, current_password }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/email", {
-    method: "PATCH",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, current_password }),
+  const data = await apiClient.patch(`${API_PATHS.AUTH}/email`, {
+    email,
+    current_password,
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Failed to update email");
-  }
   return data;
 };
 
 // Requires current_password + new_password.
 export const changePassword = async ({ current_password, new_password }) => {
-  const res = await fetch("https://api.rydevalues.cloud/api/v1/auth/password", {
-    method: "PATCH",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ current_password, new_password }),
+  const data = await apiClient.patch(`${API_PATHS.AUTH}/password`, {
+    current_password,
+    new_password,
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Failed to change password");
-  }
   return data;
 };

@@ -38,7 +38,7 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (err, userIds, context) => {
-      console.error("Soft delete failed:", err);
+      console.error(err);
       if (context?.previous)
         queryClient.setQueryData(["users"], context.previous);
       const ids = Array.isArray(userIds) ? userIds : [userIds];
