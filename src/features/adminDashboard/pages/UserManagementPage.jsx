@@ -69,7 +69,6 @@ export default function UserManagementPage() {
   const ITEMS_PER_PAGE = 10;
 
   const testUser = useAuth();
-  console.log("Test User", testUser);
 
   React.useEffect(() => {
     setCurrentPage(1);
@@ -94,7 +93,6 @@ export default function UserManagementPage() {
     role,
     status: statusFilter,
   });
-  console.log("Role from useUsers", role);
 
   // ✅ Initialize mutations
   const softDeleteMutation = useDeleteUser();
@@ -717,7 +715,6 @@ export default function UserManagementPage() {
                       onClick={() => {
                         setBulkActionMode("delete");
                         setSelectedUsers([]);
-                        console.log("SELECTED USERS", selectedUsers);
                       }}
                     >
                       <Trash2 className="h-4 w-4 mr-1.5" /> Bulk Delete

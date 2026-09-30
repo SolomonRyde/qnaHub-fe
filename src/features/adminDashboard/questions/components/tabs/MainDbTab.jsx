@@ -91,7 +91,7 @@ export function MainDbTab(props) {
       await updateMainQuestion(editModal.question.id, updatedData);
       setEditModal({ isOpen: false, question: null });
     } catch (error) {
-      console.error("Save edit error:", error);
+      console.error(error);
     } finally {
       setIsSaving(false);
     }

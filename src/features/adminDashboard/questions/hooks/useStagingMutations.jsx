@@ -200,7 +200,7 @@ export function useStagingMutations() {
     try {
       await deleteStagingQuestionMutation.mutateAsync(id);
     } catch (error) {
-      console.error("Delete staging failed:", error);
+      console.error(error);
     }
   }
 
@@ -208,7 +208,7 @@ export function useStagingMutations() {
     try {
       await deleteDuplicatesMutation.mutateAsync();
     } catch (error) {
-      console.error("Delete duplicates failed:", error);
+      console.error(error);
     }
   }
 
@@ -216,7 +216,7 @@ export function useStagingMutations() {
     try {
       await deleteAllStagingMutation.mutateAsync();
     } catch (error) {
-      console.error("Delete all failed:", error);
+      console.error(error);
     }
   }
 
@@ -228,7 +228,7 @@ export function useStagingMutations() {
     try {
       await deleteByStatusMutation.mutateAsync(status);
     } catch (error) {
-      console.error("Delete by status failed:", error);
+      console.error(error);
     }
   }
 

@@ -96,7 +96,7 @@ export function useExamProctoring({
     } catch (err) {
       // Swallow: the fullscreenchange handler will simply never fire
       // "entered", so we keep treating the exam as not-yet-fullscreen.
-      console.error("Fullscreen request failed:", err);
+      console.error(err);
     }
   }, []);
 

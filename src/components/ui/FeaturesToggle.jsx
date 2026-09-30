@@ -21,7 +21,6 @@ export function FeaturedToggle({
     } catch (error) {
       // Revert on error
       setOptimistic(optimistic);
-      console.error("Failed to toggle featured:", error);
     }
   };
 

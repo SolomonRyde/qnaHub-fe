@@ -29,8 +29,6 @@ export const RowActionsDropdown = ({
   const canDelete = canSoftDelete(user);
   const canRestoreThis = canRestore(user);
 
-  console.log("USER FROM ROWACTIONS", user);
-
   return (
     <div className="relative">
       <button

@@ -88,7 +88,6 @@ export function CreateExamModal({ open, onOpenChange, onSuccess, mutation }) {
       for (let [key, value] of formData.entries()) {
         debugData[key] = value;
       }
-      console.log("📤 Sending exam data:", debugData);
 
       // ✅ Append cascading dropdown values (in case they're not in FormData)
       if (selectedIndustry) {
@@ -145,7 +144,6 @@ export function CreateExamModal({ open, onOpenChange, onSuccess, mutation }) {
           .slice(0, 10);
         const code = `${cleanTitle}_${Date.now()}`;
         formData.set("exam_code", code);
-        console.log("🔑 Auto-generated exam_code:", code);
       }
 
       await mutation.mutateAsync(formData);
@@ -157,11 +155,11 @@ export function CreateExamModal({ open, onOpenChange, onSuccess, mutation }) {
       setSelectedCategory("");
       setTopicsCovered("");
     } catch (error) {
-      console.error("❌ Create exam error:", error);
+      console.error(error);
 
       // ✅ Show detailed validation errors from backend
       if (error.errors && Array.isArray(error.errors)) {
-        console.error("🔍 Validation errors:", error.errors);
+        console.error(error.errors);
 
         const errorMap = {};
         error.errors.forEach((err) => {

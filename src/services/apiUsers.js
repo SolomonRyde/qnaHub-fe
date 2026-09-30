@@ -1,61 +1,6 @@
 // src/services/apiUsers.js
-const API_BASE = "https://api.rydevalues.cloud/api/v1/admin";
-
-/**
- * Unified response handler - consistent with existing auth/delete services
- */
-async function handleResponse(res) {
-  const contentType = res.headers.get("content-type");
-  const isJson = contentType && contentType.includes("application/json");
-
-  if (!res.ok) {
-    let message = `Request failed with status ${res.status}`;
-
-    if (isJson) {
-      const data = await res.json().catch(() => ({}));
-      message = data.message || message;
-    } else {
-      const text = await res.text().catch(() => "");
-      console.error("🔴 API Error:", res.status, text.substring(0, 200));
-    }
-
-    // 🎯 Custom handling for specific cases
-    if (res.status === 400) {
-      console.log("You cannot change your own role  ");
-      throw new Error("You cannot change your own role !!!!");
-    }
-    if (res.status === 403) {
-      console.log(
-        "Admins do not have permission to change this role. Only Super Admins can.",
-      );
-      throw new Error(
-        " Admins do not have permission to change this role. Only Super Admins can.",
-      );
-    }
-
-    throw new Error("Something went wrong");
-  }
-
-  return isJson ? res.json() : { success: true };
-}
-
-/**
- * Reusable fetch wrapper to reduce repetition (🎁 Bonus)
- */
-async function apiRequest(endpoint, options = {}) {
-  const url = endpoint.startsWith("http") ? endpoint : `${API_BASE}${endpoint}`;
-
-  const res = await fetch(url, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
-
-  return handleResponse(res);
-}
+import { apiClient, buildQueryString } from "../lib/apiClient.js";
+import { API_PATHS } from "../config/api.js";
 
 // ─────────────────────────────────────────────────────────────
 // 🔹 GET USERS
@@ -67,51 +12,42 @@ export async function getUsers({
   role = "all",
   status = "all",
 }) {
-  const params = new URLSearchParams({
+  const params = {
     page: String(page),
     limit: String(limit),
-  });
-  if (search?.trim()) params.append("search", search.trim());
-  if (role && role !== "all") params.append("role", role.toLowerCase());
-  if (status && status !== "all") params.append("status", status);
+  };
+  if (search?.trim()) params.search = search.trim();
+  if (role && role !== "all") params.role = role.toLowerCase();
+  if (status && status !== "all") params.status = status;
 
-  return apiRequest(`/users?${params}`, { method: "GET" });
+  const queryString = buildQueryString(params);
+  return apiClient.get(`${API_PATHS.ADMIN}/users${queryString}`);
 }
 
 // ─────────────────────────────────────────────────────────────
 // 🔹 SOFT DELETE (Sets is_deleted=1, status=0)
 // ─────────────────────────────────────────────────────────────
 export async function softDeleteUser(id) {
-  console.log(`🗑️ SOFT DELETE: PATCH /users/${id}/delete`);
-  return apiRequest(`/users/${id}/delete`, { method: "PATCH" });
+  return apiClient.patch(`${API_PATHS.ADMIN}/users/${id}/delete`);
 }
 
 export async function bulkSoftDelete(userIds) {
   if (!Array.isArray(userIds) || userIds.length === 0)
     throw new Error("No users selected");
-  console.log(`🗑️ BULK SOFT DELETE: PATCH /users/bulk-delete`, { userIds });
-  return apiRequest(`/users/bulk-delete`, {
-    method: "PATCH",
-    body: JSON.stringify({ userIds }),
-  });
+  return apiClient.patch(`${API_PATHS.ADMIN}/users/bulk-delete`, { userIds });
 }
 
 // ─────────────────────────────────────────────────────────────
 // 🔹 PURGE (Permanent DELETE)
 // ─────────────────────────────────────────────────────────────
 export async function purgeUser(id) {
-  console.log(`💀 PURGE: DELETE /users/${id}/purge`);
-  return apiRequest(`/users/${id}/purge`, { method: "DELETE" });
+  return apiClient.delete(`${API_PATHS.ADMIN}/users/${id}/purge`);
 }
 
 export async function bulkPurge(userIds) {
   if (!Array.isArray(userIds) || userIds.length === 0)
     throw new Error("No users selected");
-  console.log(`💀 BULK PURGE: DELETE /users/bulk-purge`, { userIds });
-  return apiRequest(`/users/bulk-purge`, {
-    method: "DELETE",
-    body: JSON.stringify({ userIds }),
-  });
+  return apiClient.delete(`${API_PATHS.ADMIN}/users/bulk-purge`, { userIds });
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -123,8 +59,7 @@ export async function bulkPurge(userIds) {
  * @param {string} userId - The ID of the user to restore
  */
 export async function restoreUser(userId) {
-  console.log(`🔄 RESTORE: PATCH /users/${userId}/restore`);
-  return apiRequest(`/users/${userId}/restore`, { method: "PATCH" });
+  return apiClient.patch(`${API_PATHS.ADMIN}/users/${userId}/restore`);
 }
 
 /**
@@ -135,11 +70,7 @@ export async function bulkRestoreUsers(userIds) {
   if (!Array.isArray(userIds) || userIds.length === 0)
     throw new Error("No users selected for restore");
 
-  console.log(`🔄 BULK RESTORE: PATCH /users/bulk-restore`, { userIds });
-  return apiRequest(`/users/bulk-restore`, {
-    method: "PATCH",
-    body: JSON.stringify({ userIds }),
-  });
+  return apiClient.patch(`${API_PATHS.ADMIN}/users/bulk-restore`, { userIds });
 }
 
 /**
@@ -153,9 +84,8 @@ export async function bulkRestoreUsers(userIds) {
  * @returns {Promise<Object>} Updated user data
  */
 export const updateUserRole = async (id, role) => {
-  return apiRequest(`/users/${id}/update-role`, {
-    method: "PATCH",
-    body: JSON.stringify({ role }),
+  return apiClient.patch(`${API_PATHS.ADMIN}/users/${id}/update-role`, {
+    role,
   });
 };
 
@@ -170,6 +100,5 @@ export const updateUserRole = async (id, role) => {
  */
 export async function getUserById(userId) {
   if (!userId) throw new Error("User ID is required");
-  console.log(`📄 GET SINGLE USER: GET /users/${userId}`);
-  return apiRequest(`/users/${userId}`, { method: "GET" });
+  return apiClient.get(`${API_PATHS.ADMIN}/users/${userId}`);
 }

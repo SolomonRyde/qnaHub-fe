@@ -13,8 +13,8 @@ export const useGenerateQuestions = () => {
     onError: (error) => {
       // Backend validation errors come through clearly now
       const message = error?.message || "Failed to generate questions";
-      toast.error(`❌ ${message}`);
-      console.error("Question generation error:", error);
+      toast.error(error.message);
+      console.error(error);
     },
   });
 };

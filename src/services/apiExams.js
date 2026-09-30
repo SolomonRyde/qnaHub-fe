@@ -1,51 +1,5 @@
-const API_BASE = "https://api.rydevalues.cloud/api/v1/exam";
-
-const getHeaders = (isMultipart = false) => {
-  const headers = {};
-  if (!isMultipart) {
-    headers["Content-Type"] = "application/json";
-  }
-  return headers;
-};
-
-const handleResponse = async (res) => {
-  const resClone = res.clone();
-
-  let data;
-  try {
-    data = await res.json();
-  } catch (e) {
-    const text = await resClone.text();
-    throw new Error(`Server returned ${res.status}: ${text}`);
-  }
-
-  if (!res.ok) {
-    console.error("API Error:", {
-      status: res.status,
-      data: data,
-    });
-
-    const error = new Error(data.message || data.error || "Request failed");
-    error.status = res.status;
-    error.errors = data.errors || [];
-    throw error;
-  }
-  return data;
-};
-
-const buildQueryString = (params) => {
-  if (!params) return "";
-  const filtered = Object.entries(params)
-    .filter(
-      ([_, value]) => value !== null && value !== undefined && value !== "",
-    )
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
-    )
-    .join("&");
-  return filtered ? `?${filtered}` : "";
-};
+import { apiClient, buildQueryString } from "../lib/apiClient.js";
+import { API_PATHS } from "../config/api.js";
 
 /* ========================================
    PUBLIC APIS
@@ -56,50 +10,25 @@ export async function getAllExams(params = {}) {
     ...params,
     status: params.status || "published",
   });
-  const res = await fetch(`${API_BASE}${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}${queryString}`);
 }
 
 export async function getExamBySlug(slug) {
-  const res = await fetch(`${API_BASE}/slug/${slug}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/slug/${slug}`);
 }
 
 export async function getIndustries() {
-  const res = await fetch(`${API_BASE}/industries`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/industries`);
 }
 
 export async function getCategories(industryId) {
   const queryString = buildQueryString({ industryId });
-  const res = await fetch(`${API_BASE}/categories${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/categories${queryString}`);
 }
 
 export async function getSubcategories(categoryId) {
   const queryString = buildQueryString({ categoryId });
-  const res = await fetch(`${API_BASE}/subcategories${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/subcategories${queryString}`);
 }
 
 /* ========================================
@@ -107,40 +36,19 @@ export async function getSubcategories(categoryId) {
    ======================================== */
 
 export async function startExam(examId) {
-  const res = await fetch(`${API_BASE}/${examId}/start`, {
-    method: "POST",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.post(`${API_PATHS.EXAM}/${examId}/start`);
 }
 
 export async function getExamQuestions(examId) {
-  const res = await fetch(`${API_BASE}/${examId}/questions`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/${examId}/questions`);
 }
 
 export async function submitExam(attemptId, answers) {
-  const res = await fetch(`${API_BASE}/submit`, {
-    method: "POST",
-    credentials: "include",
-    headers: getHeaders(),
-    body: JSON.stringify({ attemptId, answers }),
-  });
-  return handleResponse(res);
+  return apiClient.post(`${API_PATHS.EXAM}/submit`, { attemptId, answers });
 }
 
 export async function getExamResult(attemptId) {
-  const res = await fetch(`${API_BASE}/result/${attemptId}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/result/${attemptId}`);
 }
 
 /* ========================================
@@ -161,12 +69,7 @@ export async function getMyExamAttempts(params = {}) {
     limit: params.limit || 5,
     ...params,
   });
-  const res = await fetch(`${API_BASE}/my-attempts${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/my-attempts${queryString}`);
 }
 
 /* ========================================
@@ -175,65 +78,27 @@ export async function getMyExamAttempts(params = {}) {
 
 export async function getAdminExams(params = {}) {
   const queryString = buildQueryString(params);
-  const res = await fetch(`${API_BASE}/admin${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/admin${queryString}`);
 }
 
 export async function createExam(formData) {
-  const res = await fetch(API_BASE, {
-    method: "POST",
-    credentials: "include",
-    headers: getHeaders(true),
-    body: formData,
-  });
-  return handleResponse(res);
+  return apiClient.post(API_PATHS.EXAM, formData);
 }
 
 export async function updateExam(id, formData) {
-  const isMultipart = formData instanceof FormData;
-
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: "PATCH",
-    credentials: "include",
-    // IMPORTANT: Do NOT set Content-Type header for FormData.
-    headers: isMultipart ? {} : { "Content-Type": "application/json" },
-    body: isMultipart ? formData : JSON.stringify(formData),
-  });
-
-  return handleResponse(res);
+  return apiClient.patch(`${API_PATHS.EXAM}/${id}`, formData);
 }
 
 export async function deleteExam(id) {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: "DELETE",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.delete(`${API_PATHS.EXAM}/${id}`);
 }
 
 export async function updateExamStatus(id, status) {
-  const res = await fetch(`${API_BASE}/${id}/status`, {
-    method: "PATCH",
-    credentials: "include",
-    headers: getHeaders(),
-    body: JSON.stringify({ status }),
-  });
-  return handleResponse(res);
+  return apiClient.patch(`${API_PATHS.EXAM}/${id}/status`, { status });
 }
 
 export async function toggleFeatured(id, isFeatured) {
-  const res = await fetch(`${API_BASE}/${id}/featured`, {
-    method: "PATCH",
-    credentials: "include",
-    headers: getHeaders(),
-    body: JSON.stringify({ is_featured: isFeatured }),
-  });
-  return handleResponse(res);
+  return apiClient.patch(`${API_PATHS.EXAM}/${id}/featured`, { is_featured: isFeatured });
 }
 
 /* ========================================
@@ -242,12 +107,7 @@ export async function toggleFeatured(id, isFeatured) {
 
 export async function getExamAnalytics(industryId = null) {
   const queryString = buildQueryString({ industryId });
-  const res = await fetch(`${API_BASE}/analytics${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/analytics${queryString}`);
 }
 
 /* ========================================
@@ -301,12 +161,7 @@ export async function getAdminExamAttempts(params = {}) {
     startDate: params.startDate || undefined,
     endDate: params.endDate || undefined,
   });
-  const res = await fetch(`${API_BASE}/admin/attempts${queryString}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/admin/attempts${queryString}`);
 }
 
 // GET /exam/admin/attempts/export
@@ -323,10 +178,9 @@ export async function exportAdminExamAttempts(params = {}) {
     endDate: params.endDate || undefined,
   });
 
-  const res = await fetch(`${API_BASE}/admin/attempts/export${queryString}`, {
+  const res = await fetch(`${API_PATHS.EXAM}/admin/attempts/export${queryString}`, {
     method: "GET",
     credentials: "include",
-    headers: getHeaders(),
   });
 
   if (!res.ok) {
@@ -361,10 +215,5 @@ export async function exportAdminExamAttempts(params = {}) {
 // GET /exam/admin/attempts/:attemptId
 // Returns { success, data: { ...attempt, answerReview: [...] } }
 export async function getAdminAttemptDetail(attemptId) {
-  const res = await fetch(`${API_BASE}/admin/attempts/${attemptId}`, {
-    method: "GET",
-    credentials: "include",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
+  return apiClient.get(`${API_PATHS.EXAM}/admin/attempts/${attemptId}`);
 }

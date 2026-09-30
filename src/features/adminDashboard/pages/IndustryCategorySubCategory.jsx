@@ -70,10 +70,7 @@ function IndustryCategoryContent() {
     category: filterCategory,
   });
 
-  console.log("DATA", data);
-
   const industries = data?.nestedData || [];
-  console.log("INDUSTRIES", industries);
 
   const totalIndustries = data?.stats?.totalIndustries || 0;
   const totalCats = data?.stats?.totalCategories || 0;

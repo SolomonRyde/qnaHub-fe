@@ -37,7 +37,7 @@ export const usePurgeUser = () => {
       queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (err, userIds, context) => {
-      console.error("Purge failed:", err);
+      console.error(err);
       if (context?.previous)
         queryClient.setQueryData(["users"], context.previous);
       const ids = Array.isArray(userIds) ? userIds : [userIds];

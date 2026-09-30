@@ -123,7 +123,7 @@ function ExamPreviewCard() {
       </div>
 
       {/* Floating Certificate Badge */}
-      <div className="absolute -top-4 -right-4 bg-card border border-border rounded-xl p-3 shadow-lg">
+      {/* <div className="absolute -top-4 -right-4 bg-card border border-border rounded-xl p-3 shadow-lg">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
             <Award className="w-4 h-4 text-green-500" />
@@ -135,7 +135,7 @@ function ExamPreviewCard() {
             <p className="text-xs text-muted-foreground">Score: 92%</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

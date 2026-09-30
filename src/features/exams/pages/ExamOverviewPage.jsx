@@ -38,6 +38,7 @@ import { cn } from "../../../lib/utils";
 import { ExamNavbar } from "../components/navigation/ExamNavbar";
 import { useExamBySlug } from "../hooks/useExams";
 import toast from "react-hot-toast";
+import { buildApiUrl, API_PATHS } from "../../../config/api";
 // ⚠️ Adjust this path if your AuthContext lives elsewhere in the project.
 import { useAuth } from "../../../context/AuthContext";
 
@@ -160,13 +161,11 @@ const ExamOverviewPage = () => {
     setIsStarting(true);
     try {
       const res = await fetch(
-        `https://api.rydevalues.cloud/api/v1/exam/${exam.id}/start`,
+        buildApiUrl(`${API_PATHS.EXAM}/${exam.id}/start`),
         {
           method: "POST",
-          credentials: "include", // ← this sends the auth cookie
-          headers: {
-            "Content-Type": "application/json",
-          },
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
         },
       );
 
@@ -212,7 +211,7 @@ const ExamOverviewPage = () => {
 
         await requestFs.call(el);
       } catch (fsErr) {
-        console.error("Fullscreen request failed:", fsErr);
+        console.error(fsErr);
         toast.error(
           "Fullscreen mode is mandatory to start this exam. Please allow fullscreen and try again.",
         );
@@ -229,7 +228,7 @@ const ExamOverviewPage = () => {
         },
       });
     } catch (err) {
-      console.error("Failed to start exam:", err);
+      console.error(err);
       toast.error(err.message || "Failed to start exam. Please try again.");
     } finally {
       setIsStarting(false);

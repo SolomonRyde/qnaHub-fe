@@ -9,15 +9,18 @@ import { useVerifyOtp } from "../hooks/useVerifyOtp";
 
 export function VerifyOtpPage() {
   const { state } = useLocation();
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState(state?.email || "");
+  // Read email from query parameter or location state
+  const searchParams = new URLSearchParams(window.location.search);
+  const emailFromQuery = searchParams.get("email");
+
+  const [email, setEmail] = useState(emailFromQuery || state?.email || "");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
 
   const [timer, setTimer] = useState(60); // ✅ 60 sec timer
   const [isResending, setIsResending] = useState(false);
-
-  const navigate = useNavigate();
 
   const { verifyOtp, isLoading } = useVerifyOtp();
 
@@ -62,6 +65,7 @@ export function VerifyOtpPage() {
       <AuthCard
         title="Verify OTP"
         description="Enter the OTP sent to your email"
+        className="mt-16"
         footer={
           <p className="text-sm text-muted-foreground">
             Didn’t receive OTP?{" "}

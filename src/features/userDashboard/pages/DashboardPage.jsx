@@ -279,7 +279,7 @@ export function DashboardPage() {
 
       setCurrentPage(page);
     } catch (err) {
-      console.error("Failed to load exam attempts:", err);
+      console.error(err);
       setAttemptsError(
         err.message || "Couldn't load your exam history. Please try again.",
       );

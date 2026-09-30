@@ -56,8 +56,6 @@ export function EditExamModal({
   // ✅ Initialize ALL form fields when exam loads
   useEffect(() => {
     if (exam && open) {
-      console.log("📝 Editing exam:", exam);
-
       // Set featured state
       setIsFeatured(!!exam.is_featured);
 
@@ -160,7 +158,7 @@ export function EditExamModal({
       onOpenChange(false);
       onSuccess?.();
     } catch (error) {
-      console.error("❌ Update Failed:", error);
+      console.error(error);
       setIsSubmitting(false);
 
       // Check if it's a validation error (400)

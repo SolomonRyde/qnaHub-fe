@@ -67,7 +67,7 @@ export function useImportHistoryDelete() {
     try {
       await deleteImportHistoryMutation.mutateAsync(importId);
     } catch (error) {
-      console.error("Delete import history failed:", error);
+      console.error(error);
     }
   }
 
