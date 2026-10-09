@@ -8,6 +8,10 @@ import {
   GraduationCap,
   SlidersHorizontal,
   ScrollText,
+  Upload,
+  FileText,
+  X,
+  AlertCircle,
 } from "lucide-react";
 
 export const DIFFICULTIES = [
@@ -96,6 +100,11 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
   // ✅ Added state for form validation errors
   const [errors, setErrors] = useState({});
 
+  // ✅ Added state for PDF upload
+  const [usePdfSource, setUsePdfSource] = useState(false);
+  const [selectedPdf, setSelectedPdf] = useState(null);
+  const [pdfError, setPdfError] = useState(null);
+
   const exams = examsData?.exams || examsData?.data || [];
   const selectedDifficulty = DIFFICULTIES.find(
     (d) => d.value === formData.difficulty,
@@ -128,6 +137,33 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
     }
   };
 
+  // ✅ PDF handling functions
+  const handlePdfSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate PDF
+    if (!file.name.endsWith(".pdf")) {
+      setPdfError("Only PDF files are allowed");
+      setSelectedPdf(null);
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setPdfError("File size must be under 20MB");
+      setSelectedPdf(null);
+      return;
+    }
+
+    // Valid PDF
+    setPdfError(null);
+    setSelectedPdf(file);
+  };
+
+  const handleRemovePdf = () => {
+    setSelectedPdf(null);
+    setPdfError(null);
+  };
+
   // ✅ Validation logic
   const validateForm = () => {
     const newErrors = {};
@@ -150,6 +186,12 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
     e.preventDefault();
     const newErrors = validateForm();
 
+    // Validate PDF if enabled
+    if (usePdfSource && !selectedPdf) {
+      newErrors.pdf = "Please upload a PDF file";
+      setPdfError("Please upload a PDF file");
+    }
+
     // If there are errors, set them and stop submission
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -158,7 +200,8 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
 
     // Clear errors and proceed if valid
     setErrors({});
-    onSubmit();
+    // Pass PDF file along with form submission
+    onSubmit(usePdfSource ? selectedPdf : null);
   };
 
   // ✅ Helper to dynamically apply red border if field has an error
@@ -353,7 +396,7 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
         <div className="pl-10">
           <FieldLabel htmlFor="prompt">
             Custom prompt{" "}
-            <span className="text-gray-400 font-normal">(optional)</span>
+            <span className="text-gray-400 font-normal">(*mandatory)</span>
           </FieldLabel>
           <textarea
             id="prompt"
@@ -374,7 +417,94 @@ const QuestionGeneratorForm = ({ formData, onChange, onSubmit, isLoading }) => {
 
       <div className="border-t border-gray-100 dark:border-gray-700/60" />
 
-      {/* Section 4: Actions */}
+      {/* Section 4: PDF Source Material */}
+      <div className="space-y-4">
+        <div className="pl-0">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={usePdfSource}
+              onChange={(e) => setUsePdfSource(e.target.checked)}
+              disabled={isLoading}
+              className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <span>Use PDF source material</span>
+          </label>
+          <HelperText>
+            Upload a PDF syllabus to provide context for question generation
+            (max 20MB, 1-20 pages recommended).
+          </HelperText>
+        </div>
+
+        {usePdfSource && (
+          <div className="pl-0 mt-3">
+            {!selectedPdf ? (
+              <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors bg-gray-50 dark:bg-gray-700/50">
+                <Upload className="w-10 h-10 text-gray-400 mb-2" />
+                <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                  Upload PDF Syllabus
+                </span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  Click to browse or drag and drop
+                </span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">
+                  Max 20MB, PDF format only
+                </span>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handlePdfSelect}
+                  disabled={isLoading}
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <div>
+                    <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                      {selectedPdf.name}
+                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-400">
+                      {(selectedPdf.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemovePdf}
+                  disabled={isLoading}
+                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+
+            {pdfError && (
+              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm mt-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{pdfError}</span>
+              </div>
+            )}
+
+            {usePdfSource && selectedPdf && (
+              <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-xs text-blue-800 dark:text-blue-200">
+                  💡 <strong>Tip:</strong> The PDF will provide context for
+                  question generation. Your prompt should specify which
+                  topics/chapters to focus on from the PDF.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-gray-100 dark:border-gray-700/60" />
+
+      {/* Section 5: Actions */}
       <div className="flex justify-end">
         <button
           type="submit"

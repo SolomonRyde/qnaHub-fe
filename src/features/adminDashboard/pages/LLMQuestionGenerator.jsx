@@ -12,6 +12,7 @@ import {
 
 // Hooks & Services
 import { useGenerateQuestions } from "../llm/hooks/useGenerateQuestions";
+import { useGenerateQuestionsWithPdf } from "../llm/hooks/useGenerateQuestionsWithPdf";
 import { useAdminExams } from "../../exams/hooks/useExams";
 import downloadQuestionsCsv from "../../../lib/downloadQuestionsCsv";
 import {
@@ -41,9 +42,10 @@ const AIQuestionGeneratorPage = () => {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [questions, setQuestions] = useState([]);
   const [lastExamTitle, setLastExamTitle] = useState(null);
-  const [examMetadata, setExamMetadata] = useState(null); // ✅ Store exam metadata
+  const [examMetadata, setExamMetadata] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [generationTime, setGenerationTime] = useState(null);
+  const [lastPdfFile, setLastPdfFile] = useState(null); // remembered for "Regenerate"
 
   const [aiStats, setAiStats] = useState({
     total_requests: 0,
@@ -69,11 +71,21 @@ const AIQuestionGeneratorPage = () => {
 
   const {
     mutate: generateQuestions,
-    isPending: isLoading,
-    isError,
-    error,
+    isPending: isLoadingText,
+    isError: isErrorText,
+    error: errorText,
   } = useGenerateQuestions();
-  const stageIndex = useStageIndex(isLoading);
+
+  const {
+    mutate: generateQuestionsWithPdf,
+    isPending: isLoadingPdf,
+    isError: isErrorPdf,
+    error: errorPdf,
+  } = useGenerateQuestionsWithPdf();
+
+  // Single flag covering both generation modes
+  const isGenerating = isLoadingText || isLoadingPdf;
+  const stageIndex = useStageIndex(isGenerating);
 
   useEffect(() => {
     const fetchInitialStats = async () => {
@@ -125,75 +137,20 @@ const AIQuestionGeneratorPage = () => {
     }
   };
 
-  // const handleGenerate = () => {
-  //   const validation = validateGenerationParams(formData);
-  //   if (!validation.valid) {
-  //     toast.error(validation.error);
-  //     return;
-  //   }
+  /**
+   * NOTE: `mutate` from React Query returns undefined (not a Promise),
+   * so results must be handled via the callbacks passed as 2nd argument.
+   * Success/error toasts are already shown by the hooks.
+   */
+  const handleGenerate = (pdfArg = null) => {
+    // Guard: if called straight from an onClick, pdfArg would be an event object
+    const pdfFile = pdfArg instanceof File ? pdfArg : null;
 
-  //   setQuestions([]);
-  //   setIsPreviewOpen(false);
-  //   setGenerationTime(null);
-  //   setCurrentUsage(null);
-  //   setExamMetadata(null); // ✅ Reset exam metadata
-  //   const startTime = Date.now();
-
-  //   generateQuestions(formData, {
-  //     onSuccess: (data) => {
-  //       const elapsed = (Date.now() - startTime) / 1000;
-  //       setGenerationTime(parseFloat(elapsed.toFixed(1)));
-  //       if (data?.questions?.length) {
-  //         setQuestions(data.questions);
-  //         // const selectedExam = exams.find(
-  //         //   (exam) => +exam.id === +formData.exam_id,
-  //         // );
-  //         // setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
-  //         // setCurrentUsage(data.usage);
-  //         // setAiStats(data.stats);
-
-  //         const selectedExam = exams.find(
-  //           (exam) => +exam.id === +formData.exam_id,
-  //         );
-
-  //         setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
-  //         setCurrentUsage(data.usage);
-  //         setAiStats(data.stats);
-
-  //         // ✅ Construct robust metadata in ONE step
-  //         // We pull industry/category directly from the selectedExam object
-  //         // (based on your examModel.js SQL JOINs)
-  //         setExamMetadata({
-  //           // 1. CSV Content Columns
-  //           industry: selectedExam?.industry_name || "",
-  //           category: selectedExam?.category_name || "",
-  //           subcategory: selectedExam?.sub_category_name || "",
-
-  //           // 2. Guaranteed Filename Fields
-  //           exam_title: selectedExam?.exam_title || "EXAM",
-  //           difficulty:
-  //             formData.difficulty || selectedExam?.difficulty || "UNKNOWN",
-  //           no_of_questions:
-  //             formData.num_questions ||
-  //             formData.no_of_questions ||
-  //             selectedExam?.no_of_questions ||
-  //             data.questions.length,
-  //         });
-
-  //         // ✅ Store exam metadata from response
-  //         if (data.exam_metadata) {
-  //           setExamMetadata(data.exam_metadata);
-  //         }
-
-  //         toast.success("Questions generated successfully!");
-  //       }
-  //     },
-  //     onError: () => setGenerationTime(null),
-  //   });
-  // };
-
-  const handleGenerate = () => {
-    const validation = validateGenerationParams(formData);
+    const validation = validateGenerationParams({
+      ...formData,
+      usePdf: !!pdfFile,
+      pdfFile,
+    });
     if (!validation.valid) {
       toast.error(validation.error);
       return;
@@ -203,54 +160,54 @@ const AIQuestionGeneratorPage = () => {
     setIsPreviewOpen(false);
     setGenerationTime(null);
     setCurrentUsage(null);
-    setExamMetadata(null); // ✅ Reset exam metadata
+    setExamMetadata(null);
+    setLastPdfFile(pdfFile);
     const startTime = Date.now();
 
-    generateQuestions(formData, {
+    const handlers = {
       onSuccess: (data) => {
         const elapsed = (Date.now() - startTime) / 1000;
         setGenerationTime(parseFloat(elapsed.toFixed(1)));
-        if (data?.questions?.length) {
-          setQuestions(data.questions);
 
-          const selectedExam = exams.find(
-            (exam) => +exam.id === +formData.exam_id,
-          );
+        if (!data?.questions?.length) return;
 
-          setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
-          setCurrentUsage(data.usage);
-          setAiStats(data.stats);
+        setQuestions(data.questions);
 
-          // ✅ Construct robust metadata in ONE step
-          setExamMetadata({
-            // 1. CSV Content Columns
-            industry: selectedExam?.industry_name || "",
-            category: selectedExam?.category_name || "",
-            subcategory: selectedExam?.sub_category_name || "",
+        const selectedExam = exams.find(
+          (exam) => +exam.id === +formData.exam_id,
+        );
 
-            // 2. Guaranteed Filename Fields
-            exam_title: selectedExam?.exam_title || "EXAM",
-            difficulty:
-              formData.difficulty || selectedExam?.difficulty || "UNKNOWN",
-            no_of_questions:
-              formData.num_questions ||
-              formData.no_of_questions ||
-              selectedExam?.no_of_questions ||
-              data.questions.length,
-          });
+        setLastExamTitle(selectedExam?.exam_title || "Unknown Exam");
+        setCurrentUsage(data.usage);
+        if (data.stats) setAiStats(data.stats);
 
-          // ❌ DELETED: The if (data.exam_metadata) block is gone so it doesn't overwrite the above!
-
-          toast.success("Questions generated successfully!");
-        }
+        setExamMetadata({
+          industry:
+            data.exam_metadata?.industry || selectedExam?.industry_name || "",
+          category:
+            data.exam_metadata?.category || selectedExam?.category_name || "",
+          subcategory:
+            data.exam_metadata?.subcategory ||
+            selectedExam?.sub_category_name ||
+            "",
+          exam_title: selectedExam?.exam_title || "EXAM",
+          difficulty:
+            formData.difficulty || selectedExam?.difficulty || "UNKNOWN",
+          no_of_questions: data.questions.length,
+        });
       },
       onError: () => setGenerationTime(null),
-    });
+    };
+
+    if (pdfFile) {
+      generateQuestionsWithPdf({ ...formData, pdfFile }, handlers);
+    } else {
+      generateQuestions(formData, handlers);
+    }
   };
 
   const handleDownload = () => {
     if (!questions.length) return;
-    // ✅ Pass exam metadata to CSV download
     downloadQuestionsCsv(
       questions,
       formData.exam_id || "questions",
@@ -260,6 +217,18 @@ const AIQuestionGeneratorPage = () => {
   };
 
   const hasQuestions = questions.length > 0;
+
+  const renderError = (message) => (
+    <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 border-l-4 border-l-red-500">
+      <div className="flex gap-3">
+        <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          <span className="font-semibold">Generation failed: </span>
+          {message}
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full max-w-7xl mx-auto md:py-8">
@@ -323,14 +292,16 @@ const AIQuestionGeneratorPage = () => {
               formData={formData}
               onChange={setFormData}
               onSubmit={handleGenerate}
-              isLoading={isLoading}
+              isLoading={isGenerating}
             />
           </div>
           <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-6 self-start">
             <LiveConfigSummary formData={formData} exams={exams} />
             <UsageAnalyticsSummary stats={aiStats} />
-            {isLoading && <AIGenerationProgress stageIndex={stageIndex} />}
-            {!isLoading && hasQuestions && (
+
+            {isGenerating && <AIGenerationProgress stageIndex={stageIndex} />}
+
+            {!isGenerating && hasQuestions && (
               <SuccessCard
                 examTitle={lastExamTitle}
                 difficulty={formData.difficulty}
@@ -339,22 +310,15 @@ const AIQuestionGeneratorPage = () => {
                 usage={currentUsage}
                 onPreview={() => setIsPreviewOpen(true)}
                 onDownload={handleDownload}
-                onRegenerate={handleGenerate}
-                isLoading={isLoading}
+                onRegenerate={() => handleGenerate(lastPdfFile)}
+                isLoading={isGenerating}
               />
             )}
-            {!isLoading && !hasQuestions && <EmptyQuestionsState />}
-            {isError && error && (
-              <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 border-l-4 border-l-red-500">
-                <div className="flex gap-3">
-                  <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <span className="font-semibold">Generation failed: </span>
-                    {error.message}
-                  </p>
-                </div>
-              </div>
-            )}
+
+            {!isGenerating && !hasQuestions && <EmptyQuestionsState />}
+
+            {isErrorText && errorText && renderError(errorText.message)}
+            {isErrorPdf && errorPdf && renderError(errorPdf.message)}
           </div>
         </div>
       ) : (
@@ -404,13 +368,7 @@ const AIQuestionGeneratorPage = () => {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
-              {questions.length > 0 ? (
-                <QuestionPreview questions={questions} />
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No questions to display
-                </div>
-              )}
+              <QuestionPreview questions={questions} />
             </div>
           </div>
         </div>
