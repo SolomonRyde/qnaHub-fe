@@ -23,7 +23,7 @@ const testimonials = [
     role: "Bcom Student at St Thomas College of Arts & Science",
     avatar: "/testimonials/john.jpeg",
     content:
-      " I recently took the MS Word, MS Excel, and Aptitude exams on Examify, and the experience was excellent. The platform was smooth, and the questions were practical, especially in MS Excel and Aptitude, helping me identify areas for improvement. I highly recommend Examify to anyone looking to test and enhance their skills.",
+      " I recently took the MS Word, MS Excel, and Aptitude exams on Examify, and the experience was excellent. The platform was smooth, and the questions were practical, especially in MS Excel and Aptitude, helping me identify areas for improvement. I highly recommend QnaHub to anyone looking to test and enhance their skills.",
     rating: 5,
   },
 ];

@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { generateQuestions } from "../../../../services/apiLLM";
+import { generateQuestionsWithPdf } from "../../../../services/apiLLM";
 
-export const useGenerateQuestions = () => {
+export const useGenerateQuestionsWithPdf = () => {
   return useMutation({
-    mutationFn: generateQuestions,
+    mutationFn: generateQuestionsWithPdf,
 
     onSuccess: (data) => {
       toast.success(`✅ Generated ${data.count} questions successfully!`);
@@ -19,4 +19,4 @@ export const useGenerateQuestions = () => {
   });
 };
 
-export default useGenerateQuestions;
+export default useGenerateQuestionsWithPdf;
