@@ -108,6 +108,7 @@ const AIQuestionGeneratorPage = () => {
     try {
       const res = await getGeneratedFiles();
       setGeneratedFiles(res.data || []);
+      console.log("Generated Files: ", res.data);
     } catch (err) {
       console.error("Failed to fetch generated files", err);
       toast.error("Failed to load generated files");
